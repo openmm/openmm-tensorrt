@@ -117,9 +117,6 @@ endforeach()
 add_custom_target(CopyTestFiles ALL DEPENDS ${COPIED_TEST_FILES})
 
 # Build the implementations for different platforms
-
-ADD_SUBDIRECTORY(platforms/reference)
-
 FIND_PACKAGE(CUDA QUIET)
 IF(CUDA_FOUND)
     SET(NN_BUILD_CUDA_LIB ON CACHE BOOL "Build implementation for CUDA")
