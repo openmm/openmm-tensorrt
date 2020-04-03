@@ -36,30 +36,28 @@ void NeuralNetworkForceImpl::initialize(OpenMM::ContextImpl& context) {
     TF_Output positions = {TF_GraphOperationByName(graph, "positions"), 0};
     if (positions.oper == NULL)
         throw OpenMM::OpenMMException("NeuralNetworkForce: the graph does not have a 'positions' input");
-    const auto positionsType = TF_OperationOutputType(positions);
-    if (positionsType != TF_FLOAT && positionsType != TF_DOUBLE)
-        throw OpenMM::OpenMMException("NeuralNetworkForce: 'positions' must have type float32 or float64");
-    auto boxType = TF_FLOAT;
+    if (TF_OperationOutputType(positions) != TF_FLOAT)
+        throw OpenMM::OpenMMException("NeuralNetworkForce: 'positions' must have type float32");
+
     if (owner.usesPeriodicBoundaryConditions()) {
         TF_Output boxvectors = {TF_GraphOperationByName(graph, "boxvectors"), 0};
         if (boxvectors.oper == NULL)
             throw OpenMM::OpenMMException("NeuralNetworkForce: the graph does not have a 'boxvectors' input");
-        boxType = TF_OperationOutputType(boxvectors);
-        if (boxType != TF_FLOAT && boxType != TF_DOUBLE)
-            throw OpenMM::OpenMMException("NeuralNetworkForce: 'boxvectors' must have type float32 or float64");
+        if (TF_OperationOutputType(boxvectors) != TF_FLOAT)
+            throw OpenMM::OpenMMException("NeuralNetworkForce: 'boxvectors' must have type float32");
     }
+
     TF_Output energy = {TF_GraphOperationByName(graph, "energy"), 0};
     if (energy.oper == NULL)
         throw OpenMM::OpenMMException("NeuralNetworkForce: the graph does not have an 'energy' output");
-    const auto energyType = TF_OperationOutputType(energy);
-    if (energyType != TF_FLOAT && energyType != TF_DOUBLE)
-        throw OpenMM::OpenMMException("NeuralNetworkForce: 'energy' must have type float32 or float64");
+    if (TF_OperationOutputType(energy) != TF_FLOAT)
+        throw OpenMM::OpenMMException("NeuralNetworkForce: 'energy' must have type float32");
+
     TF_Output forces = {TF_GraphOperationByName(graph, "forces"), 0};
     if (forces.oper == NULL)
         throw OpenMM::OpenMMException("NeuralNetworkForce: the graph does not have a 'forces' output");
-    const auto forcesType = TF_OperationOutputType(forces);
-    if (forcesType != TF_FLOAT && forcesType != TF_DOUBLE)
-        throw OpenMM::OpenMMException("NeuralNetworkForce: 'forces' must have type float32 or float64");
+    if (TF_OperationOutputType(forces) != TF_FLOAT)
+        throw OpenMM::OpenMMException("NeuralNetworkForce: 'forces' must have type float32");
 
     // Create the TensorFlow Session.
 
