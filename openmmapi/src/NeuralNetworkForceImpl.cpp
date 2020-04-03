@@ -72,8 +72,7 @@ void NeuralNetworkForceImpl::initialize(OpenMM::ContextImpl& context) {
     // Create the kernel.
 
     kernel = context.getPlatform().createKernel(CalcNeuralNetworkForceKernel::Name(), context);
-    kernel.getAs<CalcNeuralNetworkForceKernel>().initialize(context.getSystem(), owner, session, graph,
-            positionsType, boxType, energyType, forcesType);
+    kernel.getAs<CalcNeuralNetworkForceKernel>().initialize(context.getSystem(), owner, session, graph);
 }
 
 double NeuralNetworkForceImpl::calcForcesAndEnergy(OpenMM::ContextImpl& context, bool includeForces, bool includeEnergy, int groups) {
