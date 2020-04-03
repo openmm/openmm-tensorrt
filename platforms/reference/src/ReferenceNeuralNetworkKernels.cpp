@@ -5,22 +5,20 @@
 #include "openmm/reference/ReferencePlatform.h"
 
 using namespace NNPlugin;
-using namespace OpenMM;
-using namespace std;
 
-static vector<Vec3>& extractPositions(ContextImpl& context) {
-    ReferencePlatform::PlatformData* data = reinterpret_cast<ReferencePlatform::PlatformData*>(context.getPlatformData());
-    return *((vector<Vec3>*) data->positions);
+static std::vector<OpenMM::Vec3>& extractPositions(OpenMM::ContextImpl& context) {
+    auto data = reinterpret_cast<OpenMM::ReferencePlatform::PlatformData*>(context.getPlatformData());
+    return *((std::vector<OpenMM::Vec3>*) data->positions);
 }
 
-static vector<Vec3>& extractForces(ContextImpl& context) {
-    ReferencePlatform::PlatformData* data = reinterpret_cast<ReferencePlatform::PlatformData*>(context.getPlatformData());
-    return *((vector<Vec3>*) data->forces);
+static std::vector<OpenMM::Vec3>& extractForces(OpenMM::ContextImpl& context) {
+    auto data = reinterpret_cast<OpenMM::ReferencePlatform::PlatformData*>(context.getPlatformData());
+    return *((std::vector<OpenMM::Vec3>*) data->forces);
 }
 
-static Vec3* extractBoxVectors(ContextImpl& context) {
-    ReferencePlatform::PlatformData* data = reinterpret_cast<ReferencePlatform::PlatformData*>(context.getPlatformData());
-    return (Vec3*) data->periodicBoxVectors;
+static OpenMM::Vec3* extractBoxVectors(OpenMM::ContextImpl& context) {
+    auto data = reinterpret_cast<OpenMM::ReferencePlatform::PlatformData*>(context.getPlatformData());
+    return (OpenMM::Vec3*) data->periodicBoxVectors;
 }
 
 ReferenceCalcNeuralNetworkForceKernel::~ReferenceCalcNeuralNetworkForceKernel() {
@@ -30,7 +28,7 @@ ReferenceCalcNeuralNetworkForceKernel::~ReferenceCalcNeuralNetworkForceKernel() 
         TF_DeleteTensor(boxVectorsTensor);
 }
 
-void ReferenceCalcNeuralNetworkForceKernel::initialize(const System& system, const NeuralNetworkForce& force, TF_Session* session, TF_Graph* graph,
+void ReferenceCalcNeuralNetworkForceKernel::initialize(const OpenMM::System& system, const NeuralNetworkForce& force, TF_Session* session, TF_Graph* graph,
             TF_DataType positionsType, TF_DataType boxType, TF_DataType energyType, TF_DataType forcesType) {
     this->session = session;
     this->graph = graph;
@@ -51,12 +49,12 @@ void ReferenceCalcNeuralNetworkForceKernel::initialize(const System& system, con
     }
 }
 
-double ReferenceCalcNeuralNetworkForceKernel::execute(ContextImpl& context, bool includeForces, bool includeEnergy) {
-    vector<Vec3>& pos = extractPositions(context);
-    vector<Vec3>& force = extractForces(context);
+double ReferenceCalcNeuralNetworkForceKernel::execute(OpenMM::ContextImpl& context, bool includeForces, bool includeEnergy) {
+    const auto& pos = extractPositions(context);
+    auto& force = extractForces(context);
     int numParticles = pos.size();
     if (positionsType == TF_FLOAT) {
-        float* positions = reinterpret_cast<float*>(TF_TensorData(positionsTensor));
+        auto positions = reinterpret_cast<float*>(TF_TensorData(positionsTensor));
         for (int i = 0; i < numParticles; i++) {
             positions[3*i] = pos[i][0];
             positions[3*i+1] = pos[i][1];
@@ -64,7 +62,7 @@ double ReferenceCalcNeuralNetworkForceKernel::execute(ContextImpl& context, bool
         }
     }
     else {
-        double* positions = reinterpret_cast<double*>(TF_TensorData(positionsTensor));
+        auto positions = reinterpret_cast<double*>(TF_TensorData(positionsTensor));
         for (int i = 0; i < numParticles; i++) {
             positions[3*i] = pos[i][0];
             positions[3*i+1] = pos[i][1];
@@ -72,21 +70,21 @@ double ReferenceCalcNeuralNetworkForceKernel::execute(ContextImpl& context, bool
         }
     }
     if (usePeriodic) {
-        Vec3* box = extractBoxVectors(context);
+        const auto box = extractBoxVectors(context);
         if (boxType == TF_FLOAT) {
-            float* boxVectors = reinterpret_cast<float*>(TF_TensorData(boxVectorsTensor));
+            auto boxVectors = reinterpret_cast<float*>(TF_TensorData(boxVectorsTensor));
             for (int i = 0; i < 3; i++)
                 for (int j = 0; j < 3; j++)
                     boxVectors[3*i+j] = box[i][j];
         }
         else {
-            double* boxVectors = reinterpret_cast<double*>(TF_TensorData(boxVectorsTensor));
+            auto boxVectors = reinterpret_cast<double*>(TF_TensorData(boxVectorsTensor));
             for (int i = 0; i < 3; i++)
                 for (int j = 0; j < 3; j++)
                     boxVectors[3*i+j] = box[i][j];
         }
     }
-    vector<TF_Output> inputs, outputs;
+    std::vector<TF_Output> inputs, outputs;
     int forceOutputIndex = 0;
     if (includeEnergy)
         outputs.push_back({TF_GraphOperationByName(graph, "energy"), 0});
@@ -94,19 +92,19 @@ double ReferenceCalcNeuralNetworkForceKernel::execute(ContextImpl& context, bool
         forceOutputIndex = outputs.size();
         outputs.push_back({TF_GraphOperationByName(graph, "forces"), 0});
     }
-    vector<TF_Tensor*> inputTensors, outputTensors(outputs.size());
+    std::vector<TF_Tensor*> inputTensors, outputTensors(outputs.size());
     inputs.push_back({TF_GraphOperationByName(graph, "positions"), 0});
     inputTensors.push_back(positionsTensor);
     if (usePeriodic) {
         inputs.push_back({TF_GraphOperationByName(graph, "boxvectors"), 0});
         inputTensors.push_back(boxVectorsTensor);
     }
-    TF_Status* status = TF_NewStatus();
+    auto status = TF_NewStatus();
     TF_SessionRun(session, NULL, &inputs[0], &inputTensors[0], inputs.size(),
                   &outputs[0], &outputTensors[0], outputs.size(),
                   NULL, 0, NULL, status);
     if (TF_GetCode(status) != TF_OK)
-        throw OpenMMException(string("Error running TensorFlow session: ")+TF_Message(status));
+        throw OpenMM::OpenMMException(std::string("Error running TensorFlow session: ")+TF_Message(status));
     TF_DeleteStatus(status);
     double energy = 0.0;
     if (includeEnergy) {
@@ -117,7 +115,7 @@ double ReferenceCalcNeuralNetworkForceKernel::execute(ContextImpl& context, bool
     }
     if (includeForces) {
         if (forcesType == TF_FLOAT) {
-            const float* data = reinterpret_cast<float*>(TF_TensorData(outputTensors[forceOutputIndex]));
+            const auto data = reinterpret_cast<float*>(TF_TensorData(outputTensors[forceOutputIndex]));
             for (int i = 0; i < numParticles; i++) {
                 force[i][0] += data[3*i];
                 force[i][1] += data[3*i+1];
@@ -125,7 +123,7 @@ double ReferenceCalcNeuralNetworkForceKernel::execute(ContextImpl& context, bool
             }
         }
         else {
-            const double* data = reinterpret_cast<double*>(TF_TensorData(outputTensors[forceOutputIndex]));
+            const auto data = reinterpret_cast<double*>(TF_TensorData(outputTensors[forceOutputIndex]));
             for (int i = 0; i < numParticles; i++) {
                 force[i][0] += data[3*i];
                 force[i][1] += data[3*i+1];

@@ -5,21 +5,16 @@
 #include "openmm/internal/windowsExport.h"
 #include "openmm/internal/ContextImpl.h"
 #include "openmm/OpenMMException.h"
-#include <vector>
 
 using namespace NNPlugin;
-using namespace OpenMM;
-using namespace std;
 
 extern "C" OPENMM_EXPORT void registerPlatforms() {
 }
 
 extern "C" OPENMM_EXPORT void registerKernelFactories() {
     try {
-        int argc = 0;
-        vector<char**> argv = {NULL};
-        Platform& platform = Platform::getPlatformByName("CUDA");
-        CudaNeuralNetworkKernelFactory* factory = new CudaNeuralNetworkKernelFactory();
+        auto& platform = OpenMM::Platform::getPlatformByName("CUDA");
+        auto factory = new OpenMM::CudaNeuralNetworkKernelFactory();
         platform.registerKernelFactory(CalcNeuralNetworkForceKernel::Name(), factory);
     }
     catch (std::exception ex) {
@@ -29,17 +24,17 @@ extern "C" OPENMM_EXPORT void registerKernelFactories() {
 
 extern "C" OPENMM_EXPORT void registerNeuralNetworkCudaKernelFactories() {
     try {
-        Platform::getPlatformByName("CUDA");
+        OpenMM::Platform::getPlatformByName("CUDA");
     }
     catch (...) {
-        Platform::registerPlatform(new CudaPlatform());
+        OpenMM::Platform::registerPlatform(new OpenMM::CudaPlatform());
     }
     registerKernelFactories();
 }
 
-KernelImpl* CudaNeuralNetworkKernelFactory::createKernelImpl(std::string name, const Platform& platform, ContextImpl& context) const {
-    CudaContext& cu = *static_cast<CudaPlatform::PlatformData*>(context.getPlatformData())->contexts[0];
+OpenMM::KernelImpl* OpenMM::CudaNeuralNetworkKernelFactory::createKernelImpl(std::string name, const OpenMM::Platform& platform, OpenMM::ContextImpl& context) const {
+    auto& cu = *static_cast<OpenMM::CudaPlatform::PlatformData*>(context.getPlatformData())->contexts[0];
     if (name == CalcNeuralNetworkForceKernel::Name())
         return new CudaCalcNeuralNetworkForceKernel(name, platform, cu);
-    throw OpenMMException((std::string("Tried to create kernel with illegal kernel name '")+name+"'").c_str());
+    throw OpenMM::OpenMMException((std::string("Tried to create kernel with illegal kernel name '")+name+"'").c_str());
 }

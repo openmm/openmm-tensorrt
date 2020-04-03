@@ -24,8 +24,7 @@
 #endif
 
 using namespace NNPlugin;
-using namespace OpenMM;
 
 extern "C" OPENMM_EXPORT_NN void registerNeuralNetworkSerializationProxies() {
-    SerializationProxy::registerProxy(typeid(NeuralNetworkForce), new NeuralNetworkForceProxy());
+    OpenMM::SerializationProxy::registerProxy(typeid(NeuralNetworkForce), new OpenMM::NeuralNetworkForceProxy());
 }

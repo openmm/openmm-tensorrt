@@ -5,30 +5,12 @@
 #include <fstream>
 
 using namespace NNPlugin;
-using namespace OpenMM;
-using namespace std;
 
 NeuralNetworkForce::NeuralNetworkForce(const std::string& file) : file(file), usePeriodic(false) {
-    ifstream graphFile(file);
-    graphProto = string((istreambuf_iterator<char>(graphFile)), istreambuf_iterator<char>());
+    std::ifstream graphFile(file);
+    graphProto = std::string((std::istreambuf_iterator<char>(graphFile)), std::istreambuf_iterator<char>());
 }
 
-const string& NeuralNetworkForce::getFile() const {
-    return file;
-}
-
-const string& NeuralNetworkForce::getGraphProto() const {
-    return graphProto;
-}
-
-ForceImpl* NeuralNetworkForce::createImpl() const {
+OpenMM::ForceImpl* NeuralNetworkForce::createImpl() const {
     return new NeuralNetworkForceImpl(*this);
-}
-
-void NeuralNetworkForce::setUsesPeriodicBoundaryConditions(bool periodic) {
-    usePeriodic = periodic;
-}
-
-bool NeuralNetworkForce::usesPeriodicBoundaryConditions() const {
-    return usePeriodic;
 }

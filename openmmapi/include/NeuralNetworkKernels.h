@@ -5,7 +5,7 @@
 #include "openmm/KernelImpl.h"
 #include "openmm/Platform.h"
 #include "openmm/System.h"
-#include <c_api.h>
+#include <tensorflow/c/c_api.h>
 #include <string>
 
 namespace NNPlugin {
@@ -18,8 +18,7 @@ public:
     static std::string Name() {
         return "CalcNeuralNetworkForce";
     }
-    CalcNeuralNetworkForceKernel(std::string name, const OpenMM::Platform& platform) : OpenMM::KernelImpl(name, platform) {
-    }
+    CalcNeuralNetworkForceKernel(std::string name, const OpenMM::Platform& platform) : OpenMM::KernelImpl(name, platform) {}
     /**
      * Initialize the kernel.
      * 

@@ -4,10 +4,9 @@
 #include "NeuralNetworkForce.h"
 #include "openmm/internal/ForceImpl.h"
 #include "openmm/Kernel.h"
-#include <c_api.h>
-#include <utility>
-#include <set>
+#include <tensorflow/c/c_api.h>
 #include <string>
+#include <vector>
 
 namespace NNPlugin {
 
@@ -22,16 +21,10 @@ public:
     NeuralNetworkForceImpl(const NeuralNetworkForce& owner);
     ~NeuralNetworkForceImpl();
     void initialize(OpenMM::ContextImpl& context);
-    const NeuralNetworkForce& getOwner() const {
-        return owner;
-    }
-    void updateContextState(OpenMM::ContextImpl& context, bool& forcesInvalid) {
-        // This force field doesn't update the state directly.
-    }
+    const NeuralNetworkForce& getOwner() const { return owner; }
+    void updateContextState(OpenMM::ContextImpl& context, bool& forcesInvalid) {}
     double calcForcesAndEnergy(OpenMM::ContextImpl& context, bool includeForces, bool includeEnergy, int groups);
-    std::map<std::string, double> getDefaultParameters() {
-        return std::map<std::string, double>(); // This force field doesn't define any parameters.
-    }
+    std::map<std::string, double> getDefaultParameters() { return {}; }
     std::vector<std::string> getKernelNames();
 private:
     const NeuralNetworkForce& owner;

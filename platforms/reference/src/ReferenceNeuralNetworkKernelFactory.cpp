@@ -6,19 +6,15 @@
 #include <vector>
 
 using namespace NNPlugin;
-using namespace OpenMM;
-using namespace std;
 
 extern "C" OPENMM_EXPORT void registerPlatforms() {
 }
 
 extern "C" OPENMM_EXPORT void registerKernelFactories() {
-    int argc = 0;
-    vector<char**> argv = {NULL};
-    for (int i = 0; i < Platform::getNumPlatforms(); i++) {
-        Platform& platform = Platform::getPlatform(i);
-        if (dynamic_cast<ReferencePlatform*>(&platform) != NULL) {
-            ReferenceNeuralNetworkKernelFactory* factory = new ReferenceNeuralNetworkKernelFactory();
+    for (int i = 0; i < OpenMM::Platform::getNumPlatforms(); i++) {
+        auto& platform = OpenMM::Platform::getPlatform(i);
+        if (dynamic_cast<OpenMM::ReferencePlatform*>(&platform) != NULL) {
+            auto factory = new OpenMM::ReferenceNeuralNetworkKernelFactory();
             platform.registerKernelFactory(CalcNeuralNetworkForceKernel::Name(), factory);
         }
     }
@@ -28,9 +24,9 @@ extern "C" OPENMM_EXPORT void registerNeuralNetworkReferenceKernelFactories() {
     registerKernelFactories();
 }
 
-KernelImpl* ReferenceNeuralNetworkKernelFactory::createKernelImpl(std::string name, const Platform& platform, ContextImpl& context) const {
-    ReferencePlatform::PlatformData& data = *static_cast<ReferencePlatform::PlatformData*>(context.getPlatformData());
+OpenMM::KernelImpl* OpenMM::ReferenceNeuralNetworkKernelFactory::createKernelImpl(std::string name, const OpenMM::Platform& platform, OpenMM::ContextImpl& context) const {
+    auto& data = *static_cast<OpenMM::ReferencePlatform::PlatformData*>(context.getPlatformData());
     if (name == CalcNeuralNetworkForceKernel::Name())
         return new ReferenceCalcNeuralNetworkForceKernel(name, platform);
-    throw OpenMMException((std::string("Tried to create kernel with illegal kernel name '")+name+"'").c_str());
+    throw OpenMM::OpenMMException((std::string("Tried to create kernel with illegal kernel name '")+name+"'").c_str());
 }

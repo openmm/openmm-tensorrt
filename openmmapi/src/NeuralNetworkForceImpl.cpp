@@ -4,11 +4,8 @@
 #include "openmm/internal/ContextImpl.h"
 
 using namespace NNPlugin;
-using namespace OpenMM;
-using namespace std;
 
-NeuralNetworkForceImpl::NeuralNetworkForceImpl(const NeuralNetworkForce& owner) : owner(owner), graph(NULL), session(NULL), status(TF_NewStatus()) {
-}
+NeuralNetworkForceImpl::NeuralNetworkForceImpl(const NeuralNetworkForce& owner) : owner(owner), graph(NULL), session(NULL), status(TF_NewStatus()) {}
 
 NeuralNetworkForceImpl::~NeuralNetworkForceImpl() {
     if (session != NULL) {
@@ -20,16 +17,16 @@ NeuralNetworkForceImpl::~NeuralNetworkForceImpl() {
     TF_DeleteStatus(status);
 }
 
-void NeuralNetworkForceImpl::initialize(ContextImpl& context) {
+void NeuralNetworkForceImpl::initialize(OpenMM::ContextImpl& context) {
     // Load the graph from the file.
 
-    string graphProto = owner.getGraphProto();
+    std::string graphProto = owner.getGraphProto();
     TF_Buffer* buffer = TF_NewBufferFromString(graphProto.c_str(), graphProto.size());
     graph = TF_NewGraph();
     TF_ImportGraphDefOptions* importOptions = TF_NewImportGraphDefOptions();
     TF_GraphImportGraphDef(graph, buffer, importOptions, status);
     if (TF_GetCode(status) != TF_OK)
-        throw OpenMMException(string("Error loading TensorFlow graph: ")+TF_Message(status));
+        throw OpenMM::OpenMMException(std::string("Error loading TensorFlow graph: ")+TF_Message(status));
     TF_DeleteImportGraphDefOptions(importOptions);
     TF_DeleteBuffer(buffer);
 
@@ -38,38 +35,38 @@ void NeuralNetworkForceImpl::initialize(ContextImpl& context) {
 
     TF_Output positions = {TF_GraphOperationByName(graph, "positions"), 0};
     if (positions.oper == NULL)
-        throw OpenMMException("NeuralNetworkForce: the graph does not have a 'positions' input");
+        throw OpenMM::OpenMMException("NeuralNetworkForce: the graph does not have a 'positions' input");
     TF_DataType positionsType = TF_OperationOutputType(positions);
     if (positionsType != TF_FLOAT && positionsType != TF_DOUBLE)
-        throw OpenMMException("NeuralNetworkForce: 'positions' must have type float32 or float64");
+        throw OpenMM::OpenMMException("NeuralNetworkForce: 'positions' must have type float32 or float64");
     TF_DataType boxType = TF_FLOAT;
     if (owner.usesPeriodicBoundaryConditions()) {
         TF_Output boxvectors = {TF_GraphOperationByName(graph, "boxvectors"), 0};
         if (boxvectors.oper == NULL)
-            throw OpenMMException("NeuralNetworkForce: the graph does not have a 'boxvectors' input");
+            throw OpenMM::OpenMMException("NeuralNetworkForce: the graph does not have a 'boxvectors' input");
         boxType = TF_OperationOutputType(boxvectors);
         if (boxType != TF_FLOAT && boxType != TF_DOUBLE)
-            throw OpenMMException("NeuralNetworkForce: 'boxvectors' must have type float32 or float64");
+            throw OpenMM::OpenMMException("NeuralNetworkForce: 'boxvectors' must have type float32 or float64");
     }
     TF_Output energy = {TF_GraphOperationByName(graph, "energy"), 0};
     if (energy.oper == NULL)
-        throw OpenMMException("NeuralNetworkForce: the graph does not have an 'energy' output");
+        throw OpenMM::OpenMMException("NeuralNetworkForce: the graph does not have an 'energy' output");
     TF_DataType energyType = TF_OperationOutputType(energy);
     if (energyType != TF_FLOAT && energyType != TF_DOUBLE)
-        throw OpenMMException("NeuralNetworkForce: 'energy' must have type float32 or float64");
+        throw OpenMM::OpenMMException("NeuralNetworkForce: 'energy' must have type float32 or float64");
     TF_Output forces = {TF_GraphOperationByName(graph, "forces"), 0};
     if (forces.oper == NULL)
-        throw OpenMMException("NeuralNetworkForce: the graph does not have a 'forces' output");
+        throw OpenMM::OpenMMException("NeuralNetworkForce: the graph does not have a 'forces' output");
     TF_DataType forcesType = TF_OperationOutputType(forces);
     if (forcesType != TF_FLOAT && forcesType != TF_DOUBLE)
-        throw OpenMMException("NeuralNetworkForce: 'forces' must have type float32 or float64");
+        throw OpenMM::OpenMMException("NeuralNetworkForce: 'forces' must have type float32 or float64");
 
     // Create the TensorFlow Session.
 
     TF_SessionOptions* sessionOptions = TF_NewSessionOptions();
     session = TF_NewSession(graph, sessionOptions, status);
     if (TF_GetCode(status) != TF_OK)
-        throw OpenMMException(string("Error creating TensorFlow session: ")+TF_Message(status));
+        throw OpenMM::OpenMMException(std::string("Error creating TensorFlow session: ")+TF_Message(status));
     TF_DeleteSessionOptions(sessionOptions);
 
     // Create the kernel.
@@ -79,14 +76,12 @@ void NeuralNetworkForceImpl::initialize(ContextImpl& context) {
             positionsType, boxType, energyType, forcesType);
 }
 
-double NeuralNetworkForceImpl::calcForcesAndEnergy(ContextImpl& context, bool includeForces, bool includeEnergy, int groups) {
+double NeuralNetworkForceImpl::calcForcesAndEnergy(OpenMM::ContextImpl& context, bool includeForces, bool includeEnergy, int groups) {
     if ((groups&(1<<owner.getForceGroup())) != 0)
         return kernel.getAs<CalcNeuralNetworkForceKernel>().execute(context, includeForces, includeEnergy);
     return 0.0;
 }
 
 std::vector<std::string> NeuralNetworkForceImpl::getKernelNames() {
-    std::vector<std::string> names;
-    names.push_back(CalcNeuralNetworkForceKernel::Name());
-    return names;
+    return { CalcNeuralNetworkForceKernel::Name() };
 }
