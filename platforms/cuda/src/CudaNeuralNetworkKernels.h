@@ -24,13 +24,8 @@ public:
      * @param force          the NeuralNetworkForce this kernel will be used for
      * @param session        the TensorFlow session in which to do calculations
      * @param graph          the TensorFlow graph to use for computing forces and energy
-     * @param positionsType  the data type of the "positions" tensor
-     * @param boxType        the data type of the "boxvectors" tensor
-     * @param energyType     the data type of the "energy" tensor
-     * @param forcesType     the data type of the "forces" tensor
      */
-    void initialize(const OpenMM::System& system, const NeuralNetworkForce& force, TF_Session* session, TF_Graph* graph,
-                    TF_DataType positionsType, TF_DataType boxType, TF_DataType energyType, TF_DataType forcesType);
+    void initialize(const OpenMM::System& system, const NeuralNetworkForce& force, TF_Session* session, TF_Graph* graph);
     /**
      * Execute the kernel to calculate the forces and/or energy.
      *
@@ -47,7 +42,6 @@ private:
     TF_Graph* graph;
     TF_Tensor* positionsTensor;
     TF_Tensor* boxVectorsTensor;
-    TF_DataType positionsType, boxType, energyType, forcesType;
     bool usePeriodic;
     OpenMM::CudaArray networkForces;
     CUfunction addForcesKernel;
