@@ -41,10 +41,10 @@ void ReferenceCalcNeuralNetworkForceKernel::initialize(const OpenMM::System& sys
 
     // Construct input tensors.
 
-    int64_t positionsDims[] = {numParticles, 3};
+    const int64_t positionsDims[] = {numParticles, 3};
     positionsTensor = TF_AllocateTensor(positionsType, positionsDims, 2, numParticles*3*TF_DataTypeSize(positionsType));
     if (usePeriodic) {
-        int64_t boxVectorsDims[] = {3, 3};
+        const int64_t boxVectorsDims[] = {3, 3};
         boxVectorsTensor = TF_AllocateTensor(boxType, boxVectorsDims, 2, 9*TF_DataTypeSize(boxType));
     }
 }

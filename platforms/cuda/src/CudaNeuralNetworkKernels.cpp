@@ -26,10 +26,10 @@ void CudaCalcNeuralNetworkForceKernel::initialize(const OpenMM::System& system, 
 
     // Construct input tensors.
 
-    int64_t positionsDims[] = {numParticles, 3};
+    const int64_t positionsDims[] = {numParticles, 3};
     positionsTensor = TF_AllocateTensor(positionsType, positionsDims, 2, numParticles*3*TF_DataTypeSize(positionsType));
     if (usePeriodic) {
-        int64_t boxVectorsDims[] = {3, 3};
+        const int64_t boxVectorsDims[] = {3, 3};
         boxVectorsTensor = TF_AllocateTensor(boxType, boxVectorsDims, 2, 9*TF_DataTypeSize(boxType));
     }
 
@@ -50,7 +50,7 @@ double CudaCalcNeuralNetworkForceKernel::execute(OpenMM::ContextImpl& context, b
     context.getPositions(pos);
     int numParticles = cu.getNumAtoms();
     if (positionsType == TF_FLOAT) {
-        float* positions = reinterpret_cast<float*>(TF_TensorData(positionsTensor));
+        auto positions = reinterpret_cast<float*>(TF_TensorData(positionsTensor));
         for (int i = 0; i < numParticles; i++) {
             positions[3*i] = pos[i][0];
             positions[3*i+1] = pos[i][1];
@@ -58,7 +58,7 @@ double CudaCalcNeuralNetworkForceKernel::execute(OpenMM::ContextImpl& context, b
         }
     }
     else {
-        double* positions = reinterpret_cast<double*>(TF_TensorData(positionsTensor));
+        auto positions = reinterpret_cast<double*>(TF_TensorData(positionsTensor));
         for (int i = 0; i < numParticles; i++) {
             positions[3*i] = pos[i][0];
             positions[3*i+1] = pos[i][1];
@@ -69,13 +69,13 @@ double CudaCalcNeuralNetworkForceKernel::execute(OpenMM::ContextImpl& context, b
         OpenMM::Vec3 box[3];
         cu.getPeriodicBoxVectors(box[0], box[1], box[2]);
         if (boxType == TF_FLOAT) {
-            float* boxVectors = reinterpret_cast<float*>(TF_TensorData(boxVectorsTensor));
+            auto boxVectors = reinterpret_cast<float*>(TF_TensorData(boxVectorsTensor));
             for (int i = 0; i < 3; i++)
                 for (int j = 0; j < 3; j++)
                     boxVectors[3*i+j] = box[i][j];
         }
         else {
-            double* boxVectors = reinterpret_cast<double*>(TF_TensorData(boxVectorsTensor));
+            auto boxVectors = reinterpret_cast<double*>(TF_TensorData(boxVectorsTensor));
             for (int i = 0; i < 3; i++)
                 for (int j = 0; j < 3; j++)
                     boxVectors[3*i+j] = box[i][j];
@@ -96,7 +96,7 @@ double CudaCalcNeuralNetworkForceKernel::execute(OpenMM::ContextImpl& context, b
         inputs.push_back({TF_GraphOperationByName(graph, "boxvectors"), 0});
         inputTensors.push_back(boxVectorsTensor);
     }
-    TF_Status* status = TF_NewStatus();
+    auto status = TF_NewStatus();
     TF_SessionRun(session, NULL, &inputs[0], &inputTensors[0], inputs.size(),
                   &outputs[0], &outputTensors[0], outputs.size(),
                   NULL, 0, NULL, status);
