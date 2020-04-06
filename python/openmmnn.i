@@ -25,7 +25,7 @@
     }
 }
 
-%feature("shadow") NNPlugin::NeuralNetworkForce::NeuralNetworkForce %{
+%feature("shadow") OpenMM::NeuralNetworkForce::NeuralNetworkForce %{
     def __init__(self, *args):
         if len(args) == 1 and isinstance(args[0], str):
             this = _openmmnn.new_NeuralNetworkForce(args[0])
@@ -47,9 +47,9 @@
             self.this = this
 %}
 
-namespace NNPlugin {
+namespace OpenMM {
 
-class NeuralNetworkForce : public OpenMM::Force {
+class NeuralNetworkForce : public Force {
 public:
     NeuralNetworkForce(const std::string& file);
     const std::string& getFile() const;
@@ -60,12 +60,12 @@ public:
      * Add methods for casting a Force to a NeuralNetworkForce.
     */
     %extend {
-        static NNPlugin::NeuralNetworkForce& cast(OpenMM::Force& force) {
-            return dynamic_cast<NNPlugin::NeuralNetworkForce&>(force);
+        static NeuralNetworkForce& cast(Force& force) {
+            return dynamic_cast<OpenMM::NeuralNetworkForce&>(force);
         }
 
-        static bool isinstance(OpenMM::Force& force) {
-            return (dynamic_cast<NNPlugin::NeuralNetworkForce*>(&force) != NULL);
+        static bool isinstance(Force& force) {
+            return (dynamic_cast<OpenMM::NeuralNetworkForce*>(&force) != NULL);
         }
     }
 };
