@@ -1,4 +1,4 @@
-%module openmmnn
+%module openmmtensorrt
 
 %import(module="simtk.openmm") "swig/OpenMMSwigHeaders.i"
 %include "swig/typemaps.i"
@@ -28,7 +28,7 @@
 %feature("shadow") OpenMM::TesorRTForce::TensorRTForce %{
     def __init__(self, *args):
         if len(args) == 1 and isinstance(args[0], str):
-            this = _openmmnn.new_NeuralNetworkForce(args[0])
+            this = _openmmtensorrt.new_TensorRTForce(args[0])
         else:
             import tensorflow as tf
             import os
@@ -40,7 +40,7 @@
             with tempfile.TemporaryDirectory() as dir:
                 tf.io.write_graph(graph, dir, 'graph.pb', as_text=False)
                 file = os.path.join(dir, 'graph.pb')
-                this = _openmmnn.new_NeuralNetworkForce(file)
+                this = _openmmtensorrt.new_TenorRTForce(file)
         try:
             self.this.append(this)
         except Exception:
