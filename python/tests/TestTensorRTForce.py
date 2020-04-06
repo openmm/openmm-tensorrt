@@ -4,7 +4,7 @@ import openmmtensorrt as nn
 import tensorflow as tf
 import unittest
 
-class TestNeuralNetworkForce(unittest.TestCase):
+class TestTensorRTForce(unittest.TestCase):
 
     def testFreezeGraph(self):
         graph = tf.Graph()

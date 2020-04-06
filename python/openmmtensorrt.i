@@ -57,7 +57,7 @@ public:
     bool usesPeriodicBoundaryConditions() const;
 
     /*
-     * Add methods for casting a Force to a NeuralNetworkForce.
+     * Add methods for casting a Force to a TensorRTForce.
     */
     %extend {
         static TensorRTForce& cast(Force& force) {

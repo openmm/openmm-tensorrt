@@ -1,5 +1,5 @@
 #---------------------------------------------------
-# OpenMM Neural Network Plugin CUDA Platform
+# OpenMM TenorRT Plugin for CUDA Platform
 #----------------------------------------------------
 
 # Collect up information about the version of the OpenMM library we're building

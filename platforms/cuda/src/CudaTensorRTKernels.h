@@ -8,7 +8,7 @@
 namespace OpenMM {
 
 /**
- * This kernel is invoked by NeuralNetworkForce to calculate the forces acting on the system and the energy of the system.
+ * This kernel is invoked by TensorRTForce to calculate the forces acting on the system and the energy of the system.
  */
 class CudaCalcTensorRTForceKernel : public CalcTesorRTForceKernel {
 public:
@@ -21,7 +21,7 @@ public:
      * Initialize the kernel.
      * 
      * @param system         the System this kernel will be applied to
-     * @param force          the NeuralNetworkForce this kernel will be used for
+     * @param force          the TensorRTForce this kernel will be used for
      * @param session        the TensorFlow session in which to do calculations
      * @param graph          the TensorFlow graph to use for computing forces and energy
      */

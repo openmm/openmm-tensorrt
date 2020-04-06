@@ -1,5 +1,5 @@
 /**
- * This tests the CUDA implementation of NeuralNetworkForce.
+ * This tests the CUDA implementation of TensorRTForce.
  */
 
 #include "TensorRTForce.h"
@@ -41,7 +41,7 @@ void testForce() {
     context.setPositions(positions);
     State state = context.getState(State::Energy | State::Forces);
     
-    // See if the energy is correct.  The network defines a potential of the form E(r) = |r|^2
+    // See if the energy is correct.  The graph defines a potential of the form E(r) = |r|^2
     
     double expectedEnergy = 0;
     for (int i = 0; i < numParticles; i++) {
@@ -78,7 +78,7 @@ void testPeriodicForce() {
     context.setPositions(positions);
     State state = context.getState(State::Energy | State::Forces);
 
-    // See if the energy is correct.  The network defines a potential of the form E(r) = |r|^2
+    // See if the energy is correct.  The graph defines a potential of the form E(r) = |r|^2
 
     double expectedEnergy = 0;
     for (int i = 0; i < numParticles; i++) {

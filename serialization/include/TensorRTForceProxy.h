@@ -7,7 +7,7 @@
 namespace OpenMM {
 
 /**
- * This is a proxy for serializing NeuralNetworkForce objects.
+ * This is a proxy for serializing TensorRTForce objects.
  */
 
 class OPENMM_EXPORT_NN TensorRTForceProxy : public SerializationProxy {

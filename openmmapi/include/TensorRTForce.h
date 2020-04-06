@@ -9,16 +9,16 @@
 namespace OpenMM {
 
 /**
- * This class implements forces that are defined by user-supplied neural networks.
- * It uses the TensorFlow library to perform the computations. */
+ * This class implements forces that are defined by an user-supplied computational graph.
+ * It uses TensorRT library to perform the computations. */
 
 class OPENMM_EXPORT_NN TensorRTForce : public Force {
 public:
     /**
-     * Create a NeuralNetworkForce.  The network is defined by a TensorFlow graph saved
-     * to a binary protocol buffer file.
+     * Create a TensorRTForce. The force is defined by a TensorRT graph saved
+     * to a binary file.
      *
-     * @param file   the path to the file containing the network
+     * @param file   the path to the file containing the graph
      */
     TensorRTForce(const std::string& file);
     /**

@@ -35,29 +35,29 @@ void TensorRTForceImpl::initialize(ContextImpl& context) {
 
     TF_Output positions = {TF_GraphOperationByName(graph, "positions"), 0};
     if (positions.oper == NULL)
-        throw OpenMMException("NeuralNetworkForce: the graph does not have a 'positions' input");
+        throw OpenMMException("TensorRTForce: the graph does not have a 'positions' input");
     if (TF_OperationOutputType(positions) != TF_FLOAT)
-        throw OpenMMException("NeuralNetworkForce: 'positions' must have type float32");
+        throw OpenMMException("TensorRTForce: 'positions' must have type float32");
 
     if (owner.usesPeriodicBoundaryConditions()) {
         TF_Output boxvectors = {TF_GraphOperationByName(graph, "boxvectors"), 0};
         if (boxvectors.oper == NULL)
-            throw OpenMMException("NeuralNetworkForce: the graph does not have a 'boxvectors' input");
+            throw OpenMMException("TensorRTForce: the graph does not have a 'boxvectors' input");
         if (TF_OperationOutputType(boxvectors) != TF_FLOAT)
-            throw OpenMMException("NeuralNetworkForce: 'boxvectors' must have type float32");
+            throw OpenMMException("TensorRTForce: 'boxvectors' must have type float32");
     }
 
     TF_Output energy = {TF_GraphOperationByName(graph, "energy"), 0};
     if (energy.oper == NULL)
-        throw OpenMMException("NeuralNetworkForce: the graph does not have an 'energy' output");
+        throw OpenMMException("TensorRTForce: the graph does not have an 'energy' output");
     if (TF_OperationOutputType(energy) != TF_FLOAT)
-        throw OpenMMException("NeuralNetworkForce: 'energy' must have type float32");
+        throw OpenMMException("TensorRTForce: 'energy' must have type float32");
 
     TF_Output forces = {TF_GraphOperationByName(graph, "forces"), 0};
     if (forces.oper == NULL)
-        throw OpenMMException("NeuralNetworkForce: the graph does not have a 'forces' output");
+        throw OpenMMException("TensorRTForce: the graph does not have a 'forces' output");
     if (TF_OperationOutputType(forces) != TF_FLOAT)
-        throw OpenMMException("NeuralNetworkForce: 'forces' must have type float32");
+        throw OpenMMException("TensorRTForce: 'forces' must have type float32");
 
     // Create the TensorFlow Session.
 

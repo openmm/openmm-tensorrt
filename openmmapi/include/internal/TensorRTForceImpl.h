@@ -11,7 +11,7 @@
 namespace OpenMM {
 
 /**
- * This is the internal implementation of NeuralNetworkForce.
+ * This is the internal implementation of TensorRTForce.
  */
 
 class OPENMM_EXPORT_NN TensorRTForceImpl : public ForceImpl {

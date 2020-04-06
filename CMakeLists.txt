@@ -1,5 +1,5 @@
 #---------------------------------------------------
-# OpenMM NeuralNetwork Plugin
+# OpenMM TensorRT Plugin
 #----------------------------------------------------
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
