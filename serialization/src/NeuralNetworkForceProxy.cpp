@@ -2,7 +2,7 @@
 #include "NeuralNetworkForce.h"
 #include "openmm/serialization/SerializationNode.h"
 
-using namespace NNPlugin;
+using namespace OpenMM;
 
 OpenMM::NeuralNetworkForceProxy::NeuralNetworkForceProxy() : SerializationProxy("NeuralNetworkForce") {
 }

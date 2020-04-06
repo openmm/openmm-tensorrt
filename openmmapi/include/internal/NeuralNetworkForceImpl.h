@@ -8,8 +8,6 @@
 #include <string>
 #include <vector>
 
-using namespace NNPlugin;
-
 namespace OpenMM {
 
 /**
@@ -34,6 +32,6 @@ private:
     TF_Status* status;
 };
 
-} // namespace NNPlugin
+} // namespace OpenMM
 
 #endif /*OPENMM_NEURAL_NETWORK_FORCE_IMPL_H_*/

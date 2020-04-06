@@ -4,7 +4,6 @@
 #include "openmm/internal/AssertionUtilities.h"
 #include <fstream>
 
-using namespace NNPlugin;
 using namespace OpenMM;
 
 NeuralNetworkForce::NeuralNetworkForce(const std::string& file) : file(file), usePeriodic(false) {

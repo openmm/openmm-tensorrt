@@ -8,6 +8,8 @@
 #include <tensorflow/c/c_api.h>
 #include <string>
 
+using namespace OpenMM;
+
 namespace NNPlugin {
 
 /**

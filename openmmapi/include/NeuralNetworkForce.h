@@ -6,13 +6,13 @@
 #include <string>
 #include "internal/windowsExportNN.h"
 
-namespace NNPlugin {
+namespace OpenMM {
 
 /**
  * This class implements forces that are defined by user-supplied neural networks.
  * It uses the TensorFlow library to perform the computations. */
 
-class OPENMM_EXPORT_NN NeuralNetworkForce : public OpenMM::Force {
+class OPENMM_EXPORT_NN NeuralNetworkForce : public Force {
 public:
     /**
      * Create a NeuralNetworkForce.  The network is defined by a TensorFlow graph saved
@@ -40,12 +40,12 @@ public:
      */
     bool usesPeriodicBoundaryConditions() const { return usePeriodic; }
 protected:
-    OpenMM::ForceImpl* createImpl() const;
+    ForceImpl* createImpl() const;
 private:
     std::string file, graphProto;
     bool usePeriodic;
 };
 
-} // namespace NNPlugin
+} // namespace OpenMM
 
 #endif /*OPENMM_NEURAL_NETWORKFORCE_H_*/

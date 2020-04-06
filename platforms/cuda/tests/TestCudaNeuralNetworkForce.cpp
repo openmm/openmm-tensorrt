@@ -13,7 +13,6 @@
 #include <iostream>
 #include <vector>
 
-using namespace NNPlugin;
 using namespace OpenMM;
 using namespace std;
 

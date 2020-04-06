@@ -5,7 +5,6 @@
 #include <iostream>
 #include <sstream>
 
-using namespace NNPlugin;
 using namespace OpenMM;
 using namespace std;
 

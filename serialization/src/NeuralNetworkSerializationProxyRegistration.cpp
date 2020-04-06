@@ -23,7 +23,7 @@
     extern "C" void __attribute__((constructor)) registerNeuralNetworkSerializationProxies();
 #endif
 
-using namespace NNPlugin;
+using namespace OpenMM;
 
 extern "C" OPENMM_EXPORT_NN void registerNeuralNetworkSerializationProxies() {
     OpenMM::SerializationProxy::registerProxy(typeid(NeuralNetworkForce), new OpenMM::NeuralNetworkForceProxy());
