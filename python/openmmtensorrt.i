@@ -5,7 +5,7 @@
 %include <std_string.i>
 
 %{
-#include "NeuralNetworkForce.h"
+#include "TensorRTForce.h"
 #include "OpenMM.h"
 #include "OpenMMAmoeba.h"
 #include "OpenMMDrude.h"
@@ -25,7 +25,7 @@
     }
 }
 
-%feature("shadow") OpenMM::NeuralNetworkForce::NeuralNetworkForce %{
+%feature("shadow") OpenMM::TesorRTForce::TensorRTForce %{
     def __init__(self, *args):
         if len(args) == 1 and isinstance(args[0], str):
             this = _openmmnn.new_NeuralNetworkForce(args[0])
@@ -49,9 +49,9 @@
 
 namespace OpenMM {
 
-class NeuralNetworkForce : public Force {
+class TensorRTForce : public Force {
 public:
-    NeuralNetworkForce(const std::string& file);
+    TensorRTForce(const std::string& file);
     const std::string& getFile() const;
     void setUsesPeriodicBoundaryConditions(bool periodic);
     bool usesPeriodicBoundaryConditions() const;
@@ -60,12 +60,12 @@ public:
      * Add methods for casting a Force to a NeuralNetworkForce.
     */
     %extend {
-        static NeuralNetworkForce& cast(Force& force) {
-            return dynamic_cast<OpenMM::NeuralNetworkForce&>(force);
+        static TensorRTForce& cast(Force& force) {
+            return dynamic_cast<OpenMM::TensorRTForce&>(force);
         }
 
         static bool isinstance(Force& force) {
-            return (dynamic_cast<OpenMM::NeuralNetworkForce*>(&force) != NULL);
+            return (dynamic_cast<OpenMM::TensorRTForce*>(&force) != NULL);
         }
     }
 };

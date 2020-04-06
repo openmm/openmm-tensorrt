@@ -1,6 +1,6 @@
 import simtk.openmm as mm
 import simtk.unit as unit
-import openmmnn as nn
+import openmmtensorrt as nn
 import tensorflow as tf
 import unittest
 
@@ -15,7 +15,7 @@ class TestNeuralNetworkForce(unittest.TestCase):
             forces = tf.identity(tf.gradients(-energy, positions), name='forces')
             session = tf.Session()
             session.run(tf.global_variables_initializer())
-        force = nn.NeuralNetworkForce(graph, session)
+        force = nn.TensorRTForce(graph, session)
         system = mm.System()
         for i in range(3):
             system.addParticle(1.0)
