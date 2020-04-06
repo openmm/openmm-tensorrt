@@ -8,23 +8,23 @@
 #endif
 
 #include "TensorRTForce.h"
-#include "NeuralNetworkForceProxy.h"
+#include "TensorRTForceProxy.h"
 #include "openmm/serialization/SerializationProxy.h"
 
 #if defined(WIN32)
     #include <windows.h>
-    extern "C" OPENMM_EXPORT_NN void registerNeuralNetworkSerializationProxies();
+    extern "C" OPENMM_EXPORT_NN void registerTensorRTSerializationProxies();
     BOOL WINAPI DllMain(HANDLE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved) {
         if (ul_reason_for_call == DLL_PROCESS_ATTACH)
-            registerNeuralNetworkSerializationProxies();
+            registerTensorRTSerializationProxies();
         return TRUE;
     }
 #else
-    extern "C" void __attribute__((constructor)) registerNeuralNetworkSerializationProxies();
+    extern "C" void __attribute__((constructor)) registerTensorRTSerializationProxies();
 #endif
 
 using namespace OpenMM;
 
-extern "C" OPENMM_EXPORT_NN void registerNeuralNetworkSerializationProxies() {
-    SerializationProxy::registerProxy(typeid(TensorRTForce), new NeuralNetworkForceProxy());
+extern "C" OPENMM_EXPORT_NN void registerTensorRTSerializationProxies() {
+    SerializationProxy::registerProxy(typeid(TensorRTForce), new TensorRTForceProxy());
 }

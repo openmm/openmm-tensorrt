@@ -8,7 +8,7 @@
 using namespace OpenMM;
 using namespace std;
 
-extern "C" void registerNeuralNetworkSerializationProxies();
+extern "C" void registerTensorRTSerializationProxies();
 
 void testSerialization() {
     // Create a Force.
@@ -29,7 +29,7 @@ void testSerialization() {
 
 int main() {
     try {
-        registerNeuralNetworkSerializationProxies();
+        registerTensorRTSerializationProxies();
         testSerialization();
     }
     catch(const exception& e) {
