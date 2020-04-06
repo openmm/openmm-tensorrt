@@ -1,5 +1,5 @@
-#ifndef CUDA_NEURAL_NETWORK_KERNELS_H_
-#define CUDA_NEURAL_NETWORK_KERNELS_H_
+#ifndef OPENMM_CUDA_TENSORRT_KERNELS_H_
+#define OPENMM_CUDA_TENSORRT_KERNELS_H_
 
 #include "TensorRTKernels.h"
 #include "openmm/cuda/CudaContext.h"
@@ -49,4 +49,4 @@ private:
 
 } // namespace OpenMM
 
-#endif /*CUDA_NEURAL_NETWORK_KERNELS_H_*/
+#endif /*OPENMM_CUDA_TENSORRT_KERNELS_H_*/

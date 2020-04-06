@@ -1,7 +1,7 @@
 #include <exception>
 
-#include "CudaNeuralNetworkKernelFactory.h"
-#include "CudaNeuralNetworkKernels.h"
+#include "CudaTensorRTKernelFactory.h"
+#include "CudaTensorRTKernels.h"
 #include "openmm/internal/windowsExport.h"
 #include "openmm/internal/ContextImpl.h"
 #include "openmm/OpenMMException.h"
