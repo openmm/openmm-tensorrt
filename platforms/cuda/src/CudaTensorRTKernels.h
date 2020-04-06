@@ -43,7 +43,7 @@ private:
     TF_Tensor* positionsTensor;
     TF_Tensor* boxVectorsTensor;
     bool usePeriodic;
-    CudaArray networkForces;
+    CudaArray graphForces;
     CUfunction addForcesKernel;
 };
 

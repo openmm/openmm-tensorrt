@@ -30,7 +30,7 @@ void CudaCalcTensorRTForceKernel::initialize(const System& system, const TensorR
     }
 
     // Inititalize CUDA objects.
-    networkForces.initialize(cu, 3*numParticles, TF_DataTypeSize(TF_FLOAT), "networkForces");
+    graphForces.initialize(cu, 3*numParticles, TF_DataTypeSize(TF_FLOAT), "graphForces");
 
     // Create kernles
     auto module = cu.createModule(CudaTensorRTKernelSources::TensorRTForce);
@@ -91,9 +91,9 @@ double CudaCalcTensorRTForceKernel::execute(ContextImpl& context, bool includeFo
 
     if (includeForces) {
         const void* data = TF_TensorData(outputTensors[forceOutputIndex]);
-        networkForces.upload(data);
+        graphForces.upload(data);
         int paddedNumAtoms = cu.getPaddedNumAtoms();
-        void* args[] = {&networkForces.getDevicePointer(), &cu.getForce().getDevicePointer(), &cu.getAtomIndexArray().getDevicePointer(), &numParticles, &paddedNumAtoms};
+        void* args[] = {&graphForces.getDevicePointer(), &cu.getForce().getDevicePointer(), &cu.getAtomIndexArray().getDevicePointer(), &numParticles, &paddedNumAtoms};
         cu.executeKernel(addForcesKernel, args, numParticles);
     }
 
