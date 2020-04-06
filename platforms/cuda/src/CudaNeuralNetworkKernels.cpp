@@ -1,5 +1,5 @@
 #include "CudaNeuralNetworkKernels.h"
-#include "CudaNeuralNetworkKernelSources.h"
+#include "CudaTensorRTKernelSources.h"
 #include "openmm/internal/ContextImpl.h"
 #include <map>
 
@@ -33,7 +33,7 @@ void CudaCalcTensorRTForceKernel::initialize(const System& system, const TensorR
     networkForces.initialize(cu, 3*numParticles, TF_DataTypeSize(TF_FLOAT), "networkForces");
 
     // Create kernles
-    auto module = cu.createModule(CudaNeuralNetworkKernelSources::neuralNetworkForce);
+    auto module = cu.createModule(CudaTensorRTKernelSources::neuralNetworkForce);
     addForcesKernel = cu.getKernel(module, "addForces");
 }
 

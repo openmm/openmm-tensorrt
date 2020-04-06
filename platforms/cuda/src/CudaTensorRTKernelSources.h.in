@@ -1,5 +1,5 @@
-#ifndef OPENMM_CUDA_NEURAL_NETWORK_KERNEL_SOURCES_H_
-#define OPENMM_CUDA_NEURAL_NETWORK_KERNEL_SOURCES_H_
+#ifndef OPENMM_CUDA_TENSORRT_KERNEL_SOURCES_H_
+#define OPENMM_CUDA_TENSORRT_KERNEL_SOURCES_H_
 
 #include <string>
 
@@ -11,11 +11,11 @@ namespace OpenMM {
  * kernels subfolder.
  */
 
-class CudaNeuralNetworkKernelSources {
+class CudaTensorRTKernelSources {
 public:
 @CUDA_FILE_DECLARATIONS@
 };
 
 } // namespace OpenMM
 
-#endif /*OPENMM_CUDA_NEURAL_NETWORK_KERNEL_SOURCES_H_*/
+#endif /*OPENMM_CUDA_TENSORRT_KERNEL_SOURCES_H_*/
