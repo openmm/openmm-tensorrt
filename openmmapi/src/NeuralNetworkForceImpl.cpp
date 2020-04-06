@@ -5,7 +5,7 @@
 
 using namespace OpenMM;
 
-NeuralNetworkForceImpl::NeuralNetworkForceImpl(const NeuralNetworkForce& owner) : owner(owner), graph(NULL), session(NULL), status(TF_NewStatus()) {}
+NeuralNetworkForceImpl::NeuralNetworkForceImpl(const TensorRTForce& owner) : owner(owner), graph(NULL), session(NULL), status(TF_NewStatus()) {}
 
 NeuralNetworkForceImpl::~NeuralNetworkForceImpl() {
     if (session != NULL) {

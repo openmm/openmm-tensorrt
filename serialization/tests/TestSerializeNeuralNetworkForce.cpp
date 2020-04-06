@@ -13,17 +13,17 @@ extern "C" void registerNeuralNetworkSerializationProxies();
 void testSerialization() {
     // Create a Force.
 
-    NeuralNetworkForce force("graph.pb");
+    TensorRTForce force("graph.pb");
 
     // Serialize and then deserialize it.
 
     stringstream buffer;
-    XmlSerializer::serialize<NeuralNetworkForce>(&force, "Force", buffer);
-    NeuralNetworkForce* copy = XmlSerializer::deserialize<NeuralNetworkForce>(buffer);
+    XmlSerializer::serialize<TensorRTForce>(&force, "Force", buffer);
+    TensorRTForce* copy = XmlSerializer::deserialize<TensorRTForce>(buffer);
 
     // Compare the two forces to see if they are identical.
 
-    NeuralNetworkForce& force2 = *copy;
+    TensorRTForce& force2 = *copy;
     ASSERT_EQUAL(force.getFile(), force2.getFile());
 }
 

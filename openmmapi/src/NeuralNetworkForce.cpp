@@ -6,11 +6,11 @@
 
 using namespace OpenMM;
 
-NeuralNetworkForce::NeuralNetworkForce(const std::string& file) : file(file), usePeriodic(false) {
+TensorRTForce::TensorRTForce(const std::string& file) : file(file), usePeriodic(false) {
     std::ifstream graphFile(file);
     graphProto = std::string((std::istreambuf_iterator<char>(graphFile)), std::istreambuf_iterator<char>());
 }
 
-ForceImpl* NeuralNetworkForce::createImpl() const {
+ForceImpl* TensorRTForce::createImpl() const {
     return new NeuralNetworkForceImpl(*this);
 }

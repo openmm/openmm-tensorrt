@@ -16,16 +16,16 @@ namespace OpenMM {
 
 class OPENMM_EXPORT_NN NeuralNetworkForceImpl : public ForceImpl {
 public:
-    NeuralNetworkForceImpl(const NeuralNetworkForce& owner);
+    NeuralNetworkForceImpl(const TensorRTForce& owner);
     ~NeuralNetworkForceImpl();
     void initialize(ContextImpl& context);
-    const NeuralNetworkForce& getOwner() const { return owner; }
+    const TensorRTForce& getOwner() const { return owner; }
     void updateContextState(ContextImpl& context, bool& forcesInvalid) {}
     double calcForcesAndEnergy(ContextImpl& context, bool includeForces, bool includeEnergy, int groups);
     std::map<std::string, double> getDefaultParameters() { return {}; }
     std::vector<std::string> getKernelNames();
 private:
-    const NeuralNetworkForce& owner;
+    const TensorRTForce& owner;
     Kernel kernel;
     TF_Graph* graph;
     TF_Session* session;

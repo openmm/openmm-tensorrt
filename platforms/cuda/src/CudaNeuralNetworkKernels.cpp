@@ -12,7 +12,7 @@ CudaCalcNeuralNetworkForceKernel::~CudaCalcNeuralNetworkForceKernel() {
         TF_DeleteTensor(boxVectorsTensor);
 }
 
-void CudaCalcNeuralNetworkForceKernel::initialize(const System& system, const NeuralNetworkForce& force, TF_Session* session, TF_Graph* graph) {
+void CudaCalcNeuralNetworkForceKernel::initialize(const System& system, const TensorRTForce& force, TF_Session* session, TF_Graph* graph) {
 
     cu.setAsCurrent();
     this->session = session;

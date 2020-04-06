@@ -27,7 +27,7 @@ public:
      * @param session        the TensorFlow session in which to do calculations
      * @param graph          the TensorFlow graph to use for computing forces and energy
      */
-    virtual void initialize(const System& system, const NeuralNetworkForce& force, TF_Session* session, TF_Graph* graph) = 0;
+    virtual void initialize(const System& system, const TensorRTForce& force, TF_Session* session, TF_Graph* graph) = 0;
     /**
      * Execute the kernel to calculate the forces and/or energy.
      *
