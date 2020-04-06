@@ -8,27 +8,27 @@
 #include <string>
 #include <vector>
 
-namespace NNPlugin {
+using namespace NNPlugin;
 
-class System;
+namespace OpenMM {
 
 /**
  * This is the internal implementation of NeuralNetworkForce.
  */
 
-class OPENMM_EXPORT_NN NeuralNetworkForceImpl : public OpenMM::ForceImpl {
+class OPENMM_EXPORT_NN NeuralNetworkForceImpl : public ForceImpl {
 public:
     NeuralNetworkForceImpl(const NeuralNetworkForce& owner);
     ~NeuralNetworkForceImpl();
-    void initialize(OpenMM::ContextImpl& context);
+    void initialize(ContextImpl& context);
     const NeuralNetworkForce& getOwner() const { return owner; }
-    void updateContextState(OpenMM::ContextImpl& context, bool& forcesInvalid) {}
-    double calcForcesAndEnergy(OpenMM::ContextImpl& context, bool includeForces, bool includeEnergy, int groups);
+    void updateContextState(ContextImpl& context, bool& forcesInvalid) {}
+    double calcForcesAndEnergy(ContextImpl& context, bool includeForces, bool includeEnergy, int groups);
     std::map<std::string, double> getDefaultParameters() { return {}; }
     std::vector<std::string> getKernelNames();
 private:
     const NeuralNetworkForce& owner;
-    OpenMM::Kernel kernel;
+    Kernel kernel;
     TF_Graph* graph;
     TF_Session* session;
     TF_Status* status;
