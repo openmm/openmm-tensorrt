@@ -10,13 +10,13 @@ namespace OpenMM {
 /**
  * This kernel is invoked by NeuralNetworkForce to calculate the forces acting on the system and the energy of the system.
  */
-class CudaCalcNeuralNetworkForceKernel : public CalcNeuralNetworkForceKernel {
+class CudaCalcTensorRTForceKernel : public CalcTesorRTForceKernel {
 public:
-    CudaCalcNeuralNetworkForceKernel(std::string name, const Platform& platform, CudaContext& cu) :
-            CalcNeuralNetworkForceKernel(name, platform), hasInitializedKernel(false), cu(cu),
+    CudaCalcTensorRTForceKernel(std::string name, const Platform& platform, CudaContext& cu) :
+            CalcTesorRTForceKernel(name, platform), hasInitializedKernel(false), cu(cu),
             positionsTensor(NULL), boxVectorsTensor(NULL) {
     }
-    ~CudaCalcNeuralNetworkForceKernel();
+    ~CudaCalcTensorRTForceKernel();
     /**
      * Initialize the kernel.
      * 

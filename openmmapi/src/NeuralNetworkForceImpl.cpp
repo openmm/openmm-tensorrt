@@ -69,16 +69,16 @@ void TensorRTForceImpl::initialize(ContextImpl& context) {
 
     // Create the kernel.
 
-    kernel = context.getPlatform().createKernel(CalcNeuralNetworkForceKernel::Name(), context);
-    kernel.getAs<CalcNeuralNetworkForceKernel>().initialize(context.getSystem(), owner, session, graph);
+    kernel = context.getPlatform().createKernel(CalcTesorRTForceKernel::Name(), context);
+    kernel.getAs<CalcTesorRTForceKernel>().initialize(context.getSystem(), owner, session, graph);
 }
 
 double TensorRTForceImpl::calcForcesAndEnergy(ContextImpl& context, bool includeForces, bool includeEnergy, int groups) {
     if ((groups&(1<<owner.getForceGroup())) != 0)
-        return kernel.getAs<CalcNeuralNetworkForceKernel>().execute(context, includeForces, includeEnergy);
+        return kernel.getAs<CalcTesorRTForceKernel>().execute(context, includeForces, includeEnergy);
     return 0.0;
 }
 
 std::vector<std::string> TensorRTForceImpl::getKernelNames() {
-    return { CalcNeuralNetworkForceKernel::Name() };
+    return { CalcTesorRTForceKernel::Name() };
 }

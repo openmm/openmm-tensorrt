@@ -5,14 +5,14 @@
 
 using namespace OpenMM;
 
-CudaCalcNeuralNetworkForceKernel::~CudaCalcNeuralNetworkForceKernel() {
+CudaCalcTensorRTForceKernel::~CudaCalcTensorRTForceKernel() {
     if (positionsTensor != NULL)
         TF_DeleteTensor(positionsTensor);
     if (boxVectorsTensor != NULL)
         TF_DeleteTensor(boxVectorsTensor);
 }
 
-void CudaCalcNeuralNetworkForceKernel::initialize(const System& system, const TensorRTForce& force, TF_Session* session, TF_Graph* graph) {
+void CudaCalcTensorRTForceKernel::initialize(const System& system, const TensorRTForce& force, TF_Session* session, TF_Graph* graph) {
 
     cu.setAsCurrent();
     this->session = session;
@@ -37,7 +37,7 @@ void CudaCalcNeuralNetworkForceKernel::initialize(const System& system, const Te
     addForcesKernel = cu.getKernel(module, "addForces");
 }
 
-double CudaCalcNeuralNetworkForceKernel::execute(ContextImpl& context, bool includeForces, bool includeEnergy) {
+double CudaCalcTensorRTForceKernel::execute(ContextImpl& context, bool includeForces, bool includeEnergy) {
 
     std::vector<Vec3> pos;
     context.getPositions(pos);

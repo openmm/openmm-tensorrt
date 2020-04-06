@@ -9,7 +9,7 @@ namespace OpenMM {
  * This KernelFactory creates kernels for the CUDA implementation of the neural network plugin.
  */
 
-class CudaNeuralNetworkKernelFactory : public KernelFactory {
+class CudaTensorRTKernelFactory : public KernelFactory {
 public:
     KernelImpl* createKernelImpl(std::string name, const Platform& platform, ContextImpl& context) const;
 };

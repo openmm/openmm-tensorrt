@@ -13,12 +13,12 @@ namespace OpenMM {
 /**
  * This kernel is invoked by NeuralNetworkForce to calculate the forces acting on the system and the energy of the system.
  */
-class CalcNeuralNetworkForceKernel : public KernelImpl {
+class CalcTesorRTForceKernel : public KernelImpl {
 public:
     static std::string Name() {
-        return "CalcNeuralNetworkForce";
+        return "CalcTensorRTForce";
     }
-    CalcNeuralNetworkForceKernel(std::string name, const Platform& platform) : KernelImpl(name, platform) {}
+    CalcTesorRTForceKernel(std::string name, const Platform& platform) : KernelImpl(name, platform) {}
     /**
      * Initialize the kernel.
      * 

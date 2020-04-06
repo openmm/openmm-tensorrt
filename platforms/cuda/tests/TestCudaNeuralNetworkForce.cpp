@@ -16,7 +16,7 @@
 using namespace OpenMM;
 using namespace std;
 
-extern "C" OPENMM_EXPORT void registerNeuralNetworkCudaKernelFactories();
+extern "C" OPENMM_EXPORT void registerTensorRTCudaKernelFactories();
 
 void testForce() {
     // Create a random cloud of particles.
@@ -95,7 +95,7 @@ void testPeriodicForce() {
 
 int main(int argc, char* argv[]) {
     try {
-        registerNeuralNetworkCudaKernelFactories();
+        registerTensorRTCudaKernelFactories();
         if (argc > 1)
             Platform::getPlatformByName("CUDA").setPropertyDefaultValue("Precision", string(argv[1]));
         testForce();
