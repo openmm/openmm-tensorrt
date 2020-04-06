@@ -3,7 +3,7 @@
 #include "openmm/internal/ContextImpl.h"
 #include <map>
 
-using namespace NNPlugin;
+using namespace OpenMM;
 
 CudaCalcNeuralNetworkForceKernel::~CudaCalcNeuralNetworkForceKernel() {
     if (positionsTensor != NULL)
@@ -12,7 +12,7 @@ CudaCalcNeuralNetworkForceKernel::~CudaCalcNeuralNetworkForceKernel() {
         TF_DeleteTensor(boxVectorsTensor);
 }
 
-void CudaCalcNeuralNetworkForceKernel::initialize(const OpenMM::System& system, const NeuralNetworkForce& force, TF_Session* session, TF_Graph* graph) {
+void CudaCalcNeuralNetworkForceKernel::initialize(const System& system, const NeuralNetworkForce& force, TF_Session* session, TF_Graph* graph) {
 
     cu.setAsCurrent();
     this->session = session;
@@ -37,9 +37,9 @@ void CudaCalcNeuralNetworkForceKernel::initialize(const OpenMM::System& system, 
     addForcesKernel = cu.getKernel(module, "addForces");
 }
 
-double CudaCalcNeuralNetworkForceKernel::execute(OpenMM::ContextImpl& context, bool includeForces, bool includeEnergy) {
+double CudaCalcNeuralNetworkForceKernel::execute(ContextImpl& context, bool includeForces, bool includeEnergy) {
 
-    std::vector<OpenMM::Vec3> pos;
+    std::vector<Vec3> pos;
     context.getPositions(pos);
     int numParticles = cu.getNumAtoms();
     auto positions = reinterpret_cast<float*>(TF_TensorData(positionsTensor));
@@ -50,7 +50,7 @@ double CudaCalcNeuralNetworkForceKernel::execute(OpenMM::ContextImpl& context, b
     }
 
     if (usePeriodic) {
-        OpenMM::Vec3 box[3];
+        Vec3 box[3];
         cu.getPeriodicBoxVectors(box[0], box[1], box[2]);
         auto boxVectors = reinterpret_cast<float*>(TF_TensorData(boxVectorsTensor));
         for (int i = 0; i < 3; i++)
@@ -82,7 +82,7 @@ double CudaCalcNeuralNetworkForceKernel::execute(OpenMM::ContextImpl& context, b
                   &outputs[0], &outputTensors[0], outputs.size(),
                   NULL, 0, NULL, status);
     if (TF_GetCode(status) != TF_OK)
-        throw OpenMM::OpenMMException(std::string("Error running TensorFlow session: ")+TF_Message(status));
+        throw OpenMMException(std::string("Error running TensorFlow session: ")+TF_Message(status));
     TF_DeleteStatus(status);
 
     double energy = 0.0;

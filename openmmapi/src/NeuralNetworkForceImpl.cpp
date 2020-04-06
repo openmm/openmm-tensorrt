@@ -3,8 +3,6 @@
 #include "openmm/OpenMMException.h"
 #include "openmm/internal/ContextImpl.h"
 
-using namespace NNPlugin;
-
 using namespace OpenMM;
 
 NeuralNetworkForceImpl::NeuralNetworkForceImpl(const NeuralNetworkForce& owner) : owner(owner), graph(NULL), session(NULL), status(TF_NewStatus()) {}

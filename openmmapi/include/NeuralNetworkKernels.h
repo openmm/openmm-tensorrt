@@ -8,19 +8,17 @@
 #include <tensorflow/c/c_api.h>
 #include <string>
 
-using namespace OpenMM;
-
-namespace NNPlugin {
+namespace OpenMM {
 
 /**
  * This kernel is invoked by NeuralNetworkForce to calculate the forces acting on the system and the energy of the system.
  */
-class CalcNeuralNetworkForceKernel : public OpenMM::KernelImpl {
+class CalcNeuralNetworkForceKernel : public KernelImpl {
 public:
     static std::string Name() {
         return "CalcNeuralNetworkForce";
     }
-    CalcNeuralNetworkForceKernel(std::string name, const OpenMM::Platform& platform) : OpenMM::KernelImpl(name, platform) {}
+    CalcNeuralNetworkForceKernel(std::string name, const Platform& platform) : OpenMM::KernelImpl(name, platform) {}
     /**
      * Initialize the kernel.
      * 
@@ -29,7 +27,7 @@ public:
      * @param session        the TensorFlow session in which to do calculations
      * @param graph          the TensorFlow graph to use for computing forces and energy
      */
-    virtual void initialize(const OpenMM::System& system, const NeuralNetworkForce& force, TF_Session* session, TF_Graph* graph) = 0;
+    virtual void initialize(const System& system, const NeuralNetworkForce& force, TF_Session* session, TF_Graph* graph) = 0;
     /**
      * Execute the kernel to calculate the forces and/or energy.
      *
@@ -38,9 +36,9 @@ public:
      * @param includeEnergy  true if the energy should be calculated
      * @return the potential energy due to the force
      */
-    virtual double execute(OpenMM::ContextImpl& context, bool includeForces, bool includeEnergy) = 0;
+    virtual double execute(ContextImpl& context, bool includeForces, bool includeEnergy) = 0;
 };
 
-} // namespace NNPlugin
+} // namespace OpenMM
 
 #endif /*NEURAL_NETWORK_KERNELS_H_*/

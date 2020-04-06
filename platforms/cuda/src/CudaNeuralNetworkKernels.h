@@ -5,14 +5,14 @@
 #include "openmm/cuda/CudaContext.h"
 #include "openmm/cuda/CudaArray.h"
 
-namespace NNPlugin {
+namespace OpenMM {
 
 /**
  * This kernel is invoked by NeuralNetworkForce to calculate the forces acting on the system and the energy of the system.
  */
 class CudaCalcNeuralNetworkForceKernel : public CalcNeuralNetworkForceKernel {
 public:
-    CudaCalcNeuralNetworkForceKernel(std::string name, const OpenMM::Platform& platform, OpenMM::CudaContext& cu) :
+    CudaCalcNeuralNetworkForceKernel(std::string name, const Platform& platform, CudaContext& cu) :
             CalcNeuralNetworkForceKernel(name, platform), hasInitializedKernel(false), cu(cu),
             positionsTensor(NULL), boxVectorsTensor(NULL) {
     }
@@ -25,7 +25,7 @@ public:
      * @param session        the TensorFlow session in which to do calculations
      * @param graph          the TensorFlow graph to use for computing forces and energy
      */
-    void initialize(const OpenMM::System& system, const NeuralNetworkForce& force, TF_Session* session, TF_Graph* graph);
+    void initialize(const System& system, const NeuralNetworkForce& force, TF_Session* session, TF_Graph* graph);
     /**
      * Execute the kernel to calculate the forces and/or energy.
      *
@@ -34,19 +34,19 @@ public:
      * @param includeEnergy  true if the energy should be calculated
      * @return the potential energy due to the force
      */
-    double execute(OpenMM::ContextImpl& context, bool includeForces, bool includeEnergy);
+    double execute(ContextImpl& context, bool includeForces, bool includeEnergy);
 private:
     bool hasInitializedKernel;
-    OpenMM::CudaContext& cu;
+    CudaContext& cu;
     TF_Session* session;
     TF_Graph* graph;
     TF_Tensor* positionsTensor;
     TF_Tensor* boxVectorsTensor;
     bool usePeriodic;
-    OpenMM::CudaArray networkForces;
+    CudaArray networkForces;
     CUfunction addForcesKernel;
 };
 
-} // namespace NNPlugin
+} // namespace OpenMM
 
 #endif /*CUDA_NEURAL_NETWORK_KERNELS_H_*/
