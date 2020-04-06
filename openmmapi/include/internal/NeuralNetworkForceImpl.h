@@ -14,10 +14,10 @@ namespace OpenMM {
  * This is the internal implementation of NeuralNetworkForce.
  */
 
-class OPENMM_EXPORT_NN NeuralNetworkForceImpl : public ForceImpl {
+class OPENMM_EXPORT_NN TensorRTForceImpl : public ForceImpl {
 public:
-    NeuralNetworkForceImpl(const TensorRTForce& owner);
-    ~NeuralNetworkForceImpl();
+    TensorRTForceImpl(const TensorRTForce& owner);
+    ~TensorRTForceImpl();
     void initialize(ContextImpl& context);
     const TensorRTForce& getOwner() const { return owner; }
     void updateContextState(ContextImpl& context, bool& forcesInvalid) {}

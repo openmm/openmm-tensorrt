@@ -5,9 +5,9 @@
 
 using namespace OpenMM;
 
-NeuralNetworkForceImpl::NeuralNetworkForceImpl(const TensorRTForce& owner) : owner(owner), graph(NULL), session(NULL), status(TF_NewStatus()) {}
+TensorRTForceImpl::TensorRTForceImpl(const TensorRTForce& owner) : owner(owner), graph(NULL), session(NULL), status(TF_NewStatus()) {}
 
-NeuralNetworkForceImpl::~NeuralNetworkForceImpl() {
+TensorRTForceImpl::~TensorRTForceImpl() {
     if (session != NULL) {
         TF_CloseSession(session, status);
         TF_DeleteSession(session, status);
@@ -17,7 +17,7 @@ NeuralNetworkForceImpl::~NeuralNetworkForceImpl() {
     TF_DeleteStatus(status);
 }
 
-void NeuralNetworkForceImpl::initialize(ContextImpl& context) {
+void TensorRTForceImpl::initialize(ContextImpl& context) {
     // Load the graph from the file.
 
     const auto& graphProto = owner.getGraphProto();
@@ -73,12 +73,12 @@ void NeuralNetworkForceImpl::initialize(ContextImpl& context) {
     kernel.getAs<CalcNeuralNetworkForceKernel>().initialize(context.getSystem(), owner, session, graph);
 }
 
-double NeuralNetworkForceImpl::calcForcesAndEnergy(ContextImpl& context, bool includeForces, bool includeEnergy, int groups) {
+double TensorRTForceImpl::calcForcesAndEnergy(ContextImpl& context, bool includeForces, bool includeEnergy, int groups) {
     if ((groups&(1<<owner.getForceGroup())) != 0)
         return kernel.getAs<CalcNeuralNetworkForceKernel>().execute(context, includeForces, includeEnergy);
     return 0.0;
 }
 
-std::vector<std::string> NeuralNetworkForceImpl::getKernelNames() {
+std::vector<std::string> TensorRTForceImpl::getKernelNames() {
     return { CalcNeuralNetworkForceKernel::Name() };
 }

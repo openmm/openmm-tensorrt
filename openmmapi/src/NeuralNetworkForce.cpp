@@ -12,5 +12,5 @@ TensorRTForce::TensorRTForce(const std::string& file) : file(file), usePeriodic(
 }
 
 ForceImpl* TensorRTForce::createImpl() const {
-    return new NeuralNetworkForceImpl(*this);
+    return new TensorRTForceImpl(*this);
 }
