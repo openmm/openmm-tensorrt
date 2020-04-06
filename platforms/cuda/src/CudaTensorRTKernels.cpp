@@ -1,18 +1,18 @@
-#include "CudaNeuralNetworkKernels.h"
-#include "CudaNeuralNetworkKernelSources.h"
+#include "CudaTensorRTKernels.h"
+#include "CudaTensorRTKernelSources.h"
 #include "openmm/internal/ContextImpl.h"
 #include <map>
 
-using namespace NNPlugin;
+using namespace OpenMM;
 
-CudaCalcNeuralNetworkForceKernel::~CudaCalcNeuralNetworkForceKernel() {
+CudaCalcTensorRTForceKernel::~CudaCalcTensorRTForceKernel() {
     if (positionsTensor != NULL)
         TF_DeleteTensor(positionsTensor);
     if (boxVectorsTensor != NULL)
         TF_DeleteTensor(boxVectorsTensor);
 }
 
-void CudaCalcNeuralNetworkForceKernel::initialize(const OpenMM::System& system, const NeuralNetworkForce& force, TF_Session* session, TF_Graph* graph) {
+void CudaCalcTensorRTForceKernel::initialize(const System& system, const TensorRTForce& force, TF_Session* session, TF_Graph* graph) {
 
     cu.setAsCurrent();
     this->session = session;
@@ -30,16 +30,16 @@ void CudaCalcNeuralNetworkForceKernel::initialize(const OpenMM::System& system, 
     }
 
     // Inititalize CUDA objects.
-    networkForces.initialize(cu, 3*numParticles, TF_DataTypeSize(TF_FLOAT), "networkForces");
+    graphForces.initialize(cu, 3*numParticles, TF_DataTypeSize(TF_FLOAT), "graphForces");
 
     // Create kernles
-    auto module = cu.createModule(CudaNeuralNetworkKernelSources::neuralNetworkForce);
+    auto module = cu.createModule(CudaTensorRTKernelSources::TensorRTForce);
     addForcesKernel = cu.getKernel(module, "addForces");
 }
 
-double CudaCalcNeuralNetworkForceKernel::execute(OpenMM::ContextImpl& context, bool includeForces, bool includeEnergy) {
+double CudaCalcTensorRTForceKernel::execute(ContextImpl& context, bool includeForces, bool includeEnergy) {
 
-    std::vector<OpenMM::Vec3> pos;
+    std::vector<Vec3> pos;
     context.getPositions(pos);
     int numParticles = cu.getNumAtoms();
     auto positions = reinterpret_cast<float*>(TF_TensorData(positionsTensor));
@@ -50,7 +50,7 @@ double CudaCalcNeuralNetworkForceKernel::execute(OpenMM::ContextImpl& context, b
     }
 
     if (usePeriodic) {
-        OpenMM::Vec3 box[3];
+        Vec3 box[3];
         cu.getPeriodicBoxVectors(box[0], box[1], box[2]);
         auto boxVectors = reinterpret_cast<float*>(TF_TensorData(boxVectorsTensor));
         for (int i = 0; i < 3; i++)
@@ -82,7 +82,7 @@ double CudaCalcNeuralNetworkForceKernel::execute(OpenMM::ContextImpl& context, b
                   &outputs[0], &outputTensors[0], outputs.size(),
                   NULL, 0, NULL, status);
     if (TF_GetCode(status) != TF_OK)
-        throw OpenMM::OpenMMException(std::string("Error running TensorFlow session: ")+TF_Message(status));
+        throw OpenMMException(std::string("Error running TensorFlow session: ")+TF_Message(status));
     TF_DeleteStatus(status);
 
     double energy = 0.0;
@@ -91,9 +91,9 @@ double CudaCalcNeuralNetworkForceKernel::execute(OpenMM::ContextImpl& context, b
 
     if (includeForces) {
         const void* data = TF_TensorData(outputTensors[forceOutputIndex]);
-        networkForces.upload(data);
+        graphForces.upload(data);
         int paddedNumAtoms = cu.getPaddedNumAtoms();
-        void* args[] = {&networkForces.getDevicePointer(), &cu.getForce().getDevicePointer(), &cu.getAtomIndexArray().getDevicePointer(), &numParticles, &paddedNumAtoms};
+        void* args[] = {&graphForces.getDevicePointer(), &cu.getForce().getDevicePointer(), &cu.getAtomIndexArray().getDevicePointer(), &numParticles, &paddedNumAtoms};
         cu.executeKernel(addForcesKernel, args, numParticles);
     }
 

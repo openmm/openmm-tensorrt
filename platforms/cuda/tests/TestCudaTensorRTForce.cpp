@@ -1,8 +1,8 @@
 /**
- * This tests the CUDA implementation of NeuralNetworkForce.
+ * This tests the CUDA implementation of TensorRTForce.
  */
 
-#include "NeuralNetworkForce.h"
+#include "TensorRTForce.h"
 #include "openmm/internal/AssertionUtilities.h"
 #include "openmm/Context.h"
 #include "openmm/Platform.h"
@@ -13,11 +13,10 @@
 #include <iostream>
 #include <vector>
 
-using namespace NNPlugin;
 using namespace OpenMM;
 using namespace std;
 
-extern "C" OPENMM_EXPORT void registerNeuralNetworkCudaKernelFactories();
+extern "C" OPENMM_EXPORT void registerTensorRTCudaKernelFactories();
 
 void testForce() {
     // Create a random cloud of particles.
@@ -31,7 +30,7 @@ void testForce() {
         system.addParticle(1.0);
         positions[i] = Vec3(genrand_real2(sfmt), genrand_real2(sfmt), genrand_real2(sfmt))*10;
     }
-    NeuralNetworkForce* force = new NeuralNetworkForce("tests/central.pb");
+    TensorRTForce* force = new TensorRTForce("tests/central.pb");
     system.addForce(force);
     
     // Compute the forces and energy.
@@ -42,7 +41,7 @@ void testForce() {
     context.setPositions(positions);
     State state = context.getState(State::Energy | State::Forces);
     
-    // See if the energy is correct.  The network defines a potential of the form E(r) = |r|^2
+    // See if the energy is correct.  The graph defines a potential of the form E(r) = |r|^2
     
     double expectedEnergy = 0;
     for (int i = 0; i < numParticles; i++) {
@@ -67,7 +66,7 @@ void testPeriodicForce() {
         system.addParticle(1.0);
         positions[i] = Vec3(genrand_real2(sfmt), genrand_real2(sfmt), genrand_real2(sfmt))*10;
     }
-    NeuralNetworkForce* force = new NeuralNetworkForce("tests/periodic.pb");
+    TensorRTForce* force = new TensorRTForce("tests/periodic.pb");
     force->setUsesPeriodicBoundaryConditions(true);
     system.addForce(force);
 
@@ -79,7 +78,7 @@ void testPeriodicForce() {
     context.setPositions(positions);
     State state = context.getState(State::Energy | State::Forces);
 
-    // See if the energy is correct.  The network defines a potential of the form E(r) = |r|^2
+    // See if the energy is correct.  The graph defines a potential of the form E(r) = |r|^2
 
     double expectedEnergy = 0;
     for (int i = 0; i < numParticles; i++) {
@@ -96,7 +95,7 @@ void testPeriodicForce() {
 
 int main(int argc, char* argv[]) {
     try {
-        registerNeuralNetworkCudaKernelFactories();
+        registerTensorRTCudaKernelFactories();
         if (argc > 1)
             Platform::getPlatformByName("CUDA").setPropertyDefaultValue("Precision", string(argv[1]));
         testForce();

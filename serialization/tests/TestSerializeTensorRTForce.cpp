@@ -1,36 +1,35 @@
-#include "NeuralNetworkForce.h"
+#include "TensorRTForce.h"
 #include "openmm/Platform.h"
 #include "openmm/internal/AssertionUtilities.h"
 #include "openmm/serialization/XmlSerializer.h"
 #include <iostream>
 #include <sstream>
 
-using namespace NNPlugin;
 using namespace OpenMM;
 using namespace std;
 
-extern "C" void registerNeuralNetworkSerializationProxies();
+extern "C" void registerTensorRTSerializationProxies();
 
 void testSerialization() {
     // Create a Force.
 
-    NeuralNetworkForce force("graph.pb");
+    TensorRTForce force("graph.pb");
 
     // Serialize and then deserialize it.
 
     stringstream buffer;
-    XmlSerializer::serialize<NeuralNetworkForce>(&force, "Force", buffer);
-    NeuralNetworkForce* copy = XmlSerializer::deserialize<NeuralNetworkForce>(buffer);
+    XmlSerializer::serialize<TensorRTForce>(&force, "Force", buffer);
+    TensorRTForce* copy = XmlSerializer::deserialize<TensorRTForce>(buffer);
 
     // Compare the two forces to see if they are identical.
 
-    NeuralNetworkForce& force2 = *copy;
+    TensorRTForce& force2 = *copy;
     ASSERT_EQUAL(force.getFile(), force2.getFile());
 }
 
 int main() {
     try {
-        registerNeuralNetworkSerializationProxies();
+        registerTensorRTSerializationProxies();
         testSerialization();
     }
     catch(const exception& e) {

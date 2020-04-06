@@ -1,5 +1,0 @@
-#include "CudaNeuralNetworkKernelSources.h"
-
-using namespace NNPlugin;
-using namespace std;
-
