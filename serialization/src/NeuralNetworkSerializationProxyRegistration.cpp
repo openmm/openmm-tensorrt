@@ -26,5 +26,5 @@
 using namespace OpenMM;
 
 extern "C" OPENMM_EXPORT_NN void registerNeuralNetworkSerializationProxies() {
-    OpenMM::SerializationProxy::registerProxy(typeid(NeuralNetworkForce), new OpenMM::NeuralNetworkForceProxy());
+    SerializationProxy::registerProxy(typeid(NeuralNetworkForce), new NeuralNetworkForceProxy());
 }

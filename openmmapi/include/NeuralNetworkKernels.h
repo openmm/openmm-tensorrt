@@ -18,7 +18,7 @@ public:
     static std::string Name() {
         return "CalcNeuralNetworkForce";
     }
-    CalcNeuralNetworkForceKernel(std::string name, const Platform& platform) : OpenMM::KernelImpl(name, platform) {}
+    CalcNeuralNetworkForceKernel(std::string name, const Platform& platform) : KernelImpl(name, platform) {}
     /**
      * Initialize the kernel.
      * 
