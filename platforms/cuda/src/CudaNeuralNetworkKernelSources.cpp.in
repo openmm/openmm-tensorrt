@@ -1,3 +1,4 @@
 #include "CudaNeuralNetworkKernelSources.h"
 
+using namespace std;
 using namespace OpenMM;
