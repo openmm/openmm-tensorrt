@@ -5,7 +5,7 @@
 # Collect up information about the version of the OpenMM library we're building
 # and make it available to the code so it can be built into the binaries.
 
-SET(NN_CUDA_LIBRARY_NAME OpenMMNNCUDA)
+SET(NN_CUDA_LIBRARY_NAME ${NN_LIBRARY_NAME}CUDA)
 
 SET(SHARED_TARGET ${NN_CUDA_LIBRARY_NAME})
 

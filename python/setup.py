@@ -18,7 +18,7 @@ if platform.system() == 'Darwin':
 
 extension = Extension(name='_@MODULE_NAME@',
                       sources=['@WRAP_FILE@'],
-                      libraries=['OpenMM', 'OpenMMNN'],
+                      libraries=['OpenMM', '@NN_LIBRARY_NAME@'],
                       include_dirs=[os.path.join(openmm_dir, 'include'), nn_plugin_header_dir],
                       library_dirs=[os.path.join(openmm_dir, 'lib'), nn_plugin_library_dir],
                       runtime_library_dirs=[os.path.join(openmm_dir, 'lib')],
