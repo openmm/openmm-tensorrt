@@ -1,7 +1,7 @@
-#ifndef OPENMM_NEURAL_NETWORK_FORCE_IMPL_H_
-#define OPENMM_NEURAL_NETWORK_FORCE_IMPL_H_
+#ifndef OPENMM_TENSORRT_FORCE_IMPL_H_
+#define OPENMM_TENSORRT_FORCE_IMPL_H_
 
-#include "NeuralNetworkForce.h"
+#include "TensorRTForce.h"
 #include "openmm/internal/ForceImpl.h"
 #include "openmm/Kernel.h"
 #include <tensorflow/c/c_api.h>
@@ -34,4 +34,4 @@ private:
 
 } // namespace OpenMM
 
-#endif /*OPENMM_NEURAL_NETWORK_FORCE_IMPL_H_*/
+#endif /*OPENMM_TENSORRT_FORCE_IMPL_H_*/

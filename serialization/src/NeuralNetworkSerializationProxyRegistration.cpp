@@ -7,7 +7,7 @@
 #include <cstdlib>
 #endif
 
-#include "NeuralNetworkForce.h"
+#include "TensorRTForce.h"
 #include "NeuralNetworkForceProxy.h"
 #include "openmm/serialization/SerializationProxy.h"
 

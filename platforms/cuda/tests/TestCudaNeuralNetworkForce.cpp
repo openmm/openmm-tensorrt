@@ -2,7 +2,7 @@
  * This tests the CUDA implementation of NeuralNetworkForce.
  */
 
-#include "NeuralNetworkForce.h"
+#include "TensorRTForce.h"
 #include "openmm/internal/AssertionUtilities.h"
 #include "openmm/Context.h"
 #include "openmm/Platform.h"

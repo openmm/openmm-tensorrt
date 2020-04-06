@@ -1,4 +1,4 @@
-#include "NeuralNetworkForce.h"
+#include "TensorRTForce.h"
 #include "openmm/Platform.h"
 #include "openmm/internal/AssertionUtilities.h"
 #include "openmm/serialization/XmlSerializer.h"

@@ -1,7 +1,7 @@
-#ifndef NEURAL_NETWORK_KERNELS_H_
-#define NEURAL_NETWORK_KERNELS_H_
+#ifndef OPENMM_TENSORRT_KERNELS_H_
+#define OPENMM_TENSORRT_KERNELS_H_
 
-#include "NeuralNetworkForce.h"
+#include "TensorRTForce.h"
 #include "openmm/KernelImpl.h"
 #include "openmm/Platform.h"
 #include "openmm/System.h"
@@ -41,4 +41,4 @@ public:
 
 } // namespace OpenMM
 
-#endif /*NEURAL_NETWORK_KERNELS_H_*/
+#endif /*OPENMM_TENSORRT_KERNELS_H_*/

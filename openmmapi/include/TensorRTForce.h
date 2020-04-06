@@ -1,5 +1,5 @@
-#ifndef OPENMM_NEURAL_NETWORKFORCE_H_
-#define OPENMM_NEURAL_NETWORKFORCE_H_
+#ifndef OPENMM_TENSORRT_FORCE_H_
+#define OPENMM_TENSORRT_FORCE_H_
 
 #include "openmm/Context.h"
 #include "openmm/Force.h"
@@ -48,4 +48,4 @@ private:
 
 } // namespace OpenMM
 
-#endif /*OPENMM_NEURAL_NETWORKFORCE_H_*/
+#endif /*OPENMM_TENSORRT_FORCE_H_*/

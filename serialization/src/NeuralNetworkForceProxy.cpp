@@ -1,5 +1,5 @@
 #include "NeuralNetworkForceProxy.h"
-#include "NeuralNetworkForce.h"
+#include "TensorRTForce.h"
 #include "openmm/serialization/SerializationNode.h"
 
 using namespace OpenMM;

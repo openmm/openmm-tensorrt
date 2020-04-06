@@ -1,5 +1,5 @@
-#include "NeuralNetworkForce.h"
-#include "internal/NeuralNetworkForceImpl.h"
+#include "TensorRTForce.h"
+#include "internal/TensorRTForceImpl.h"
 #include "openmm/OpenMMException.h"
 #include "openmm/internal/AssertionUtilities.h"
 #include <fstream>

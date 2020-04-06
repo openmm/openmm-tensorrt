@@ -1,7 +1,7 @@
 #ifndef CUDA_NEURAL_NETWORK_KERNELS_H_
 #define CUDA_NEURAL_NETWORK_KERNELS_H_
 
-#include "NeuralNetworkKernels.h"
+#include "TensorRTKernels.h"
 #include "openmm/cuda/CudaContext.h"
 #include "openmm/cuda/CudaArray.h"
 
