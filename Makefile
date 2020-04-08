@@ -16,14 +16,15 @@ standard:
 	cd $(BUILD_DIR) &&\
 	cmake .. \
 		-DCMAKE_BUILD_TYPE=Release \
+		-DOPENMM_DIR=$(CONDA_PREFIX) \
 		&&\
 	make -j
 
 clean:
-	$(RM) -r $(BUILD)
+	make -C $(BUILD_DIR) clean
 
 check:
-	make -C test test
+	make -C $(BUILD_DIR) test
 
 docker_image:
 	nvidia-docker build --tag $(PLUGIN_DOCKER_IMAGE) \
