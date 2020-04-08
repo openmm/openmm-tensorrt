@@ -16,6 +16,7 @@ standard:
 	cd $(BUILD_DIR) &&\
 	cmake .. \
 		-DCMAKE_BUILD_TYPE=Release \
+		-DEXTRA_COMPILE_FLAGS="-D_GLIBCXX_USE_CXX11_ABI=0" \
 		-DOPENMM_DIR=$(CONDA_PREFIX) \
 		&&\
 	make -j
