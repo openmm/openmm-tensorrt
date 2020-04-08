@@ -1,2 +1,3 @@
 .vscode
 build
+docker/nv-tensorrt-repo-rhel7-cuda*

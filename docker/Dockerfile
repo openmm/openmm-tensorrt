@@ -43,10 +43,12 @@ ENV CXX /opt/gcc/bin/g++
 
 # Install TensorRT
 # Note: the download URL will work for CUDA 10.0 only
-ENV TENSORRT_RPM nv-tensorrt-repo-rhel7-cuda$PLUGIN_CUDA_VERSION-trt7.0.0.11-ga-20191216-1-1.x86_64.rpm
+ENV TENSORRT_PACKAGE nv-tensorrt-repo-rhel7-cuda$PLUGIN_CUDA_VERSION-trt7.0.0.11-ga-20191216-1-1.x86_64
+ENV TENSORRT_RPM $TENSORRT_PACKAGE.rpm
 COPY $TENSORRT_RPM .
 RUN yum install -y ./$TENSORRT_RPM &&\
     yum install -y tensorrt &&\
+    yum remove -y $TENSORRT_PACKAGE &&\
     yum clean all &&\
     rm -f $TENSORRT_RPM
 
@@ -76,7 +78,8 @@ RUN conda create $CONDA_CHANNEL_LIST \
                  make \
                  openmm==$OPENMM_VERSION \
                  python==$PYTHON_VERSION \
-                 swig
+                 swig &&\
+    conda clean --all --yes
                 #  anaconda \
                 #  conda-build \
                 #  conda-verify \
