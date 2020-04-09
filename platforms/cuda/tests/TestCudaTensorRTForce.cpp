@@ -30,7 +30,7 @@ void testForce() {
         system.addParticle(1.0);
         positions[i] = Vec3(genrand_real2(sfmt), genrand_real2(sfmt), genrand_real2(sfmt))*10;
     }
-    TensorRTForce* force = new TensorRTForce("tests/central.pb");
+    TensorRTForce* force = new TensorRTForce("graphs/central.pb");
     system.addForce(force);
     
     // Compute the forces and energy.
@@ -66,7 +66,7 @@ void testPeriodicForce() {
         system.addParticle(1.0);
         positions[i] = Vec3(genrand_real2(sfmt), genrand_real2(sfmt), genrand_real2(sfmt))*10;
     }
-    TensorRTForce* force = new TensorRTForce("tests/periodic.pb");
+    TensorRTForce* force = new TensorRTForce("graphs/periodic.pb");
     force->setUsesPeriodicBoundaryConditions(true);
     system.addForce(force);
 
