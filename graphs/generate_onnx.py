@@ -1,6 +1,6 @@
 import torch
 
-class Model(torch.nn.Module):
+class Graph(torch.nn.Module):
 
     def __init__(self):
         super().__init__()
@@ -19,9 +19,9 @@ class Model(torch.nn.Module):
 
 if __name__ == '__main__':
 
-    model = Model()
+    graph = Graph()
     positions = torch.zeros((10, 3), dtype=torch.float32)
     vectors = torch.zeros((3, 3), dtype=torch.float32)
 
-    torch.onnx.export(model, (positions,), 'aperiodic.onnx', verbose=True, opset_version=9)
-    torch.onnx.export(model, (positions, vectors), 'periodic.onnx', verbose=True, opset_version=9)
+    torch.onnx.export(graph, (positions,), 'aperiodic.onnx', verbose=True, opset_version=9)
+    torch.onnx.export(graph, (positions, vectors), 'periodic.onnx', verbose=True, opset_version=9)
