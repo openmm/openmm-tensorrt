@@ -91,7 +91,7 @@ void TensorRTForceImpl::initialize(ContextImpl& context) {
     // Create the kernel.
 
     kernel = context.getPlatform().createKernel(CalcTesorRTForceKernel::Name(), context);
-    kernel.getAs<CalcTesorRTForceKernel>().initialize(context.getSystem(), owner, session, graph, *engine);
+    kernel.getAs<CalcTesorRTForceKernel>().initialize(context.getSystem(), owner, *engine);
 }
 
 double TensorRTForceImpl::calcForcesAndEnergy(ContextImpl& context, bool includeForces, bool includeEnergy, int groups) {
