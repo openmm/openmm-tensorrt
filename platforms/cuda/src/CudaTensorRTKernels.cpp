@@ -37,6 +37,20 @@ void CudaCalcTensorRTForceKernel::initialize(const System& system, const TensorR
     // Inititalize CUDA objects.
     graphForces.initialize(cu, 3*numParticles, TF_DataTypeSize(TF_FLOAT), "graphForces");
 
+    graphPositions.initialize(cu, 3*numParticles, sizeof(float), "graphPosition");
+    if (usePeriodic)
+        graphVectors.initialize(cu, 9, sizeof(float), "graphVectors");
+    graphEnergy.initialize(cu, 1, sizeof(float), "graphEnergy");
+    graphForces2.initialize(cu, 3*numParticles, sizeof(float), "graphForces2");
+
+    static_assert(sizeof(CUdeviceptr) == sizeof(void*));
+
+    bindings.push_back(reinterpret_cast<void*>(graphPositions.getDevicePointer()));
+    if (usePeriodic)
+        bindings.push_back(reinterpret_cast<void*>(graphVectors.getDevicePointer()));
+    bindings.push_back(reinterpret_cast<void*>(graphEnergy.getDevicePointer()));
+    bindings.push_back(reinterpret_cast<void*>(graphForces2.getDevicePointer()));
+
     // Create kernles
     auto module = cu.createModule(CudaTensorRTKernelSources::TensorRTForce);
     addForcesKernel = cu.getKernel(module, "addForces");

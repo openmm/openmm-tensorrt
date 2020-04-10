@@ -48,6 +48,11 @@ private:
     CUfunction addForcesKernel;
     using ExecutionContext = nvinfer1::IExecutionContext;
     std::shared_ptr<ExecutionContext> execution;
+    CudaArray graphPositions;
+    CudaArray graphVectors;
+    CudaArray graphEnergy;
+    CudaArray graphForces2;
+    std::vector<void*> bindings;
 };
 
 } // namespace OpenMM
