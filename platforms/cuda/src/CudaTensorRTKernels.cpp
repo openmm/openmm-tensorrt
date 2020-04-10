@@ -130,11 +130,17 @@ double CudaCalcTensorRTForceKernel::execute(ContextImpl& context, bool includeFo
     if (includeEnergy)
         energy = reinterpret_cast<float*>(TF_TensorData(outputTensors[0]))[0];
 
+    if (includeEnergy) {
+        std::vector<float> energy2;
+        graphEnergy.download(energy2);
+        energy = energy2[0];
+    }
+
     if (includeForces) {
         const void* data = TF_TensorData(outputTensors[forceOutputIndex]);
         graphForces.upload(data);
         int paddedNumAtoms = cu.getPaddedNumAtoms();
-        void* args[] = {&graphForces.getDevicePointer(), &cu.getForce().getDevicePointer(), &cu.getAtomIndexArray().getDevicePointer(), &numParticles, &paddedNumAtoms};
+        void* args[] = {&graphForces2.getDevicePointer(), &cu.getForce().getDevicePointer(), &cu.getAtomIndexArray().getDevicePointer(), &numParticles, &paddedNumAtoms};
         cu.executeKernel(addForcesKernel, args, numParticles);
     }
 
