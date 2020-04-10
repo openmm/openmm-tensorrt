@@ -37,11 +37,11 @@ void CudaCalcTensorRTForceKernel::initialize(const System& system, const TensorR
     // Inititalize CUDA objects.
     graphForces.initialize(cu, 3*numParticles, TF_DataTypeSize(TF_FLOAT), "graphForces");
 
-    graphPositions.initialize(cu, 3*numParticles, sizeof(float), "graphPosition");
+    graphPositions.initialize<float>(cu, 3*numParticles, "graphPosition");
     if (usePeriodic)
-        graphVectors.initialize(cu, 9, sizeof(float), "graphVectors");
-    graphEnergy.initialize(cu, 1, sizeof(float), "graphEnergy");
-    graphForces2.initialize(cu, 3*numParticles, sizeof(float), "graphForces2");
+        graphVectors.initialize<float>(cu, 9, "graphVectors");
+    graphEnergy.initialize<float>(cu, 1, "graphEnergy");
+    graphForces2.initialize<float>(cu, 3*numParticles, "graphForces2");
 
     static_assert(sizeof(CUdeviceptr) == sizeof(void*));
 
