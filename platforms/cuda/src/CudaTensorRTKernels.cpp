@@ -104,6 +104,28 @@ double CudaCalcTensorRTForceKernel::execute(ContextImpl& context, bool includeFo
         throw OpenMMException(std::string("Error running TensorFlow session: ")+TF_Message(status));
     TF_DeleteStatus(status);
 
+    std::vector<float> positions2;
+    for (const auto& p: pos) {
+        positions2.push_back(p[0]);
+        positions2.push_back(p[1]);
+        positions2.push_back(p[2]);
+    }
+    graphPositions.upload(positions2);
+
+    if (usePeriodic) {
+        std::vector<float> vectors;
+        Vec3 box[3];
+        cu.getPeriodicBoxVectors(box[0], box[1], box[2]);
+        for (int i = 0; i < 3; i++) {
+            vectors.push_back(box[i][0]);
+            vectors.push_back(box[i][1]);
+            vectors.push_back(box[i][2]);
+        }
+        graphVectors.upload(vectors);
+    }
+
+    execution->executeV2(bindings.data());
+
     double energy = 0.0;
     if (includeEnergy)
         energy = reinterpret_cast<float*>(TF_TensorData(outputTensors[0]))[0];
