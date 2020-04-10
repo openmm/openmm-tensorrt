@@ -13,7 +13,7 @@ class Graph(torch.nn.Module):
             positions = positions - torch.floor(positions / vectors) * vectors
 
         energy = torch.sum(positions**2)
-        forces = -2 * torch.ones_like(positions)
+        forces = -2 * positions
 
         return energy, forces
 
