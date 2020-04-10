@@ -4,18 +4,17 @@
 
 using namespace OpenMM;
 
-TensorRTForceProxy::TensorRTForceProxy() : SerializationProxy("TensorRTForce") {
-}
-
 void TensorRTForceProxy::serialize(const void* object, SerializationNode& node) const {
     node.setIntProperty("version", 1);
     const auto& force = *reinterpret_cast<const TensorRTForce*>(object);
-    node.setStringProperty("file", force.getFile());
+    node.setStringProperty("serializedGraph", force.serializedGraph);
+    node.setBoolProperty("usePeriodic", force.usePeriodic);
 }
 
 void* TensorRTForceProxy::deserialize(const SerializationNode& node) const {
     if (node.getIntProperty("version") != 1)
         throw OpenMMException("Unsupported version number");
-    auto force = new TensorRTForce(node.getStringProperty("file"));
-    return force;
+    const auto& serializedGraph = node.getStringProperty("serializedGraph");
+    bool usePeriodic = node.getBoolProperty("usePeriodic");
+    return new TensorRTForce(serializedGraph, usePeriodic);
 }

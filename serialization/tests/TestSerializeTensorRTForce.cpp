@@ -6,7 +6,6 @@
 #include <sstream>
 
 using namespace OpenMM;
-using namespace std;
 
 extern "C" void registerTensorRTSerializationProxies();
 
@@ -17,14 +16,14 @@ void testSerialization() {
 
     // Serialize and then deserialize it.
 
-    stringstream buffer;
+    std::stringstream buffer;
     XmlSerializer::serialize<TensorRTForce>(&force, "Force", buffer);
     TensorRTForce* copy = XmlSerializer::deserialize<TensorRTForce>(buffer);
 
     // Compare the two forces to see if they are identical.
 
     TensorRTForce& force2 = *copy;
-    ASSERT_EQUAL(force.getFile(), force2.getFile());
+    ASSERT_EQUAL(force.getSerializedGraph(), force2.getSerializedGraph());
 }
 
 int main() {
@@ -32,10 +31,10 @@ int main() {
         registerTensorRTSerializationProxies();
         testSerialization();
     }
-    catch(const exception& e) {
-        cout << "exception: " << e.what() << endl;
+    catch(const std::exception& e) {
+        std::cout << "exception: " << e.what() << std::endl;
         return 1;
     }
-    cout << "Done" << endl;
+    std::cout << "Done" << std::endl;
     return 0;
 }
