@@ -22,10 +22,6 @@ public:
      */
     TensorRTForce(const std::string& file);
     /**
-     * Get the path to the file containing the graph.
-     */
-    const std::string& getFile() const { return file; }
-    /**
      * Get the content of the protocol buffer defining the graph.
      */
     const std::string& getSerializedGraph() const { return serializedGraph; }
@@ -42,7 +38,9 @@ public:
 protected:
     ForceImpl* createImpl() const;
 private:
-    std::string file;
+    friend class TensorRTForceProxy;
+    TensorRTForce(const std::string& serializedGraph, bool usePeriodic) :
+        serializedGraph(serializedGraph), usePeriodic(usePeriodic) {};
     std::string serializedGraph;
     bool usePeriodic;
 };

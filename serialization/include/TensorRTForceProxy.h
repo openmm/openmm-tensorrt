@@ -12,7 +12,7 @@ namespace OpenMM {
 
 class OPENMM_EXPORT_NN TensorRTForceProxy : public SerializationProxy {
 public:
-    TensorRTForceProxy();
+    TensorRTForceProxy() : SerializationProxy("TensorRTForce") {};
     void serialize(const void* object, SerializationNode& node) const;
     void* deserialize(const SerializationNode& node) const;
 };
