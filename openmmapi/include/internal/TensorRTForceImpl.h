@@ -26,7 +26,6 @@ class Logger : public nvinfer1:: ILogger {
 class OPENMM_EXPORT_NN TensorRTForceImpl : public ForceImpl {
 public:
     TensorRTForceImpl(const TensorRTForce& owner);
-    ~TensorRTForceImpl();
     void initialize(ContextImpl& context);
     const TensorRTForce& getOwner() const { return owner; }
     void updateContextState(ContextImpl& context, bool& forcesInvalid) {}
@@ -36,9 +35,6 @@ public:
 private:
     const TensorRTForce& owner;
     Kernel kernel;
-    TF_Graph* graph;
-    TF_Session* session;
-    TF_Status* status;
     Logger logger;
     using Runtime = nvinfer1::IRuntime;
     using Engine = nvinfer1::ICudaEngine;

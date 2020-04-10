@@ -28,7 +28,6 @@ public:
     /**
      * Get the content of the protocol buffer defining the graph.
      */
-    const std::string& getGraphProto() const { return graphProto; }
     const std::string& getSerializedGraph() const { return serializedGraph; }
     /**
      * Set whether this force makes use of periodic boundary conditions.  If this is set
@@ -43,8 +42,7 @@ public:
 protected:
     ForceImpl* createImpl() const;
 private:
-    std::string file, graphProto;
-    std::string file2;
+    std::string file;
     std::string serializedGraph;
     bool usePeriodic;
 };
