@@ -4,6 +4,7 @@
 #include "TensorRTKernels.h"
 #include "openmm/cuda/CudaContext.h"
 #include "openmm/cuda/CudaArray.h"
+#include <NvInfer.h>
 #include <memory>
 
 namespace OpenMM {
@@ -14,10 +15,8 @@ namespace OpenMM {
 class CudaCalcTensorRTForceKernel : public CalcTesorRTForceKernel {
 public:
     CudaCalcTensorRTForceKernel(std::string name, const Platform& platform, CudaContext& cu) :
-            CalcTesorRTForceKernel(name, platform), hasInitializedKernel(false), cu(cu),
-            positionsTensor(NULL), boxVectorsTensor(NULL) {
+        CalcTesorRTForceKernel(name, platform), hasInitializedKernel(false), cu(cu) {
     }
-    ~CudaCalcTensorRTForceKernel();
     /**
      * Initialize the kernel.
      * 
@@ -26,7 +25,7 @@ public:
      * @param session        the TensorFlow session in which to do calculations
      * @param graph          the TensorFlow graph to use for computing forces and energy
      */
-    void initialize(const System& system, const TensorRTForce& force, TF_Session* session, TF_Graph* graph, Engine& engine);
+    void initialize(const System& system, const TensorRTForce& force, Engine& engine);
     /**
      * Execute the kernel to calculate the forces and/or energy.
      *
@@ -39,19 +38,14 @@ public:
 private:
     bool hasInitializedKernel;
     CudaContext& cu;
-    TF_Session* session;
-    TF_Graph* graph;
-    TF_Tensor* positionsTensor;
-    TF_Tensor* boxVectorsTensor;
     bool usePeriodic;
-    CudaArray graphForces;
     CUfunction addForcesKernel;
     using ExecutionContext = nvinfer1::IExecutionContext;
     std::shared_ptr<ExecutionContext> execution;
     CudaArray graphPositions;
     CudaArray graphVectors;
     CudaArray graphEnergy;
-    CudaArray graphForces2;
+    CudaArray graphForces;
     std::vector<void*> bindings;
 };
 

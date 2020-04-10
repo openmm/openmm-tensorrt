@@ -5,7 +5,6 @@
 #include "openmm/KernelImpl.h"
 #include "openmm/Platform.h"
 #include "openmm/System.h"
-#include <tensorflow/c/c_api.h>
 #include <NvInfer.h>
 #include <string>
 
@@ -29,7 +28,7 @@ public:
      * @param session        the TensorFlow session in which to do calculations
      * @param graph          the TensorFlow graph to use for computing forces and energy
      */
-    virtual void initialize(const System& system, const TensorRTForce& force, TF_Session* session, TF_Graph* graph, Engine& engine) = 0;
+    virtual void initialize(const System& system, const TensorRTForce& force, Engine& engine) = 0;
     /**
      * Execute the kernel to calculate the forces and/or energy.
      *
