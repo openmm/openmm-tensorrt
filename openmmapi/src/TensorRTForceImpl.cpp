@@ -36,7 +36,7 @@ void TensorRTForceImpl::initialize(ContextImpl& context) {
 
     // Deserialize TensorRT graph
     const auto& graph2 = owner.getSerializedGraph();
-    const auto destructor = [](Engine* r) { r->destroy(); };
+    const auto destructor = [](Engine* e) { e->destroy(); };
     engine = {runtime->deserializeCudaEngine(graph2.data(), graph2.size()), destructor};
 
     // Check that the graph contains all the expected elements and that their types
@@ -91,7 +91,7 @@ void TensorRTForceImpl::initialize(ContextImpl& context) {
     // Create the kernel.
 
     kernel = context.getPlatform().createKernel(CalcTesorRTForceKernel::Name(), context);
-    kernel.getAs<CalcTesorRTForceKernel>().initialize(context.getSystem(), owner, session, graph);
+    kernel.getAs<CalcTesorRTForceKernel>().initialize(context.getSystem(), owner, session, graph, *engine);
 }
 
 double TensorRTForceImpl::calcForcesAndEnergy(ContextImpl& context, bool includeForces, bool includeEnergy, int groups) {

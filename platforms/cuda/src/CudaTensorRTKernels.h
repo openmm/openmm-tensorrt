@@ -4,6 +4,7 @@
 #include "TensorRTKernels.h"
 #include "openmm/cuda/CudaContext.h"
 #include "openmm/cuda/CudaArray.h"
+#include <memory>
 
 namespace OpenMM {
 
@@ -25,7 +26,7 @@ public:
      * @param session        the TensorFlow session in which to do calculations
      * @param graph          the TensorFlow graph to use for computing forces and energy
      */
-    void initialize(const System& system, const TensorRTForce& force, TF_Session* session, TF_Graph* graph);
+    void initialize(const System& system, const TensorRTForce& force, TF_Session* session, TF_Graph* graph, Engine& engine);
     /**
      * Execute the kernel to calculate the forces and/or energy.
      *
@@ -45,6 +46,8 @@ private:
     bool usePeriodic;
     CudaArray graphForces;
     CUfunction addForcesKernel;
+    using ExecutionContext = nvinfer1::IExecutionContext;
+    std::shared_ptr<ExecutionContext> execution;
 };
 
 } // namespace OpenMM

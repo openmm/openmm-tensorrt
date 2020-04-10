@@ -12,13 +12,18 @@ CudaCalcTensorRTForceKernel::~CudaCalcTensorRTForceKernel() {
         TF_DeleteTensor(boxVectorsTensor);
 }
 
-void CudaCalcTensorRTForceKernel::initialize(const System& system, const TensorRTForce& force, TF_Session* session, TF_Graph* graph) {
+void CudaCalcTensorRTForceKernel::initialize(const System& system, const TensorRTForce& force, TF_Session* session, TF_Graph* graph, Engine& engine) {
 
     cu.setAsCurrent();
     this->session = session;
     this->graph = graph;
     usePeriodic = force.usesPeriodicBoundaryConditions();
     int numParticles = system.getNumParticles();
+
+    // Create TensorRT execution context
+    // TODO fix the destructor
+    const auto destructor = [](ExecutionContext* e) { /* e->destroy(); */ };
+    execution = {engine.createExecutionContext(), destructor};
 
     // Construct input tensors.
 
