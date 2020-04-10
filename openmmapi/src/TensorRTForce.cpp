@@ -7,11 +7,11 @@
 
 using namespace OpenMM;
 
-TensorRTForce::TensorRTForce(const std::string& file, const std::string& file2) : file(file), usePeriodic(false) {
+TensorRTForce::TensorRTForce(const std::string& file): file(file), usePeriodic(false) {
 
     // Read the serialized graph from a file
     std::stringstream stream;
-    stream << std::ifstream(file2, std::ifstream::binary).rdbuf();
+    stream << std::ifstream(file, std::ifstream::binary).rdbuf();
     serializedGraph = stream.str();
 }
 

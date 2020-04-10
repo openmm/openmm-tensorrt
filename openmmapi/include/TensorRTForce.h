@@ -20,7 +20,7 @@ public:
      *
      * @param file   the path to the file containing the graph
      */
-    TensorRTForce(const std::string& file, const std::string& file2);
+    TensorRTForce(const std::string& file);
     /**
      * Get the path to the file containing the graph.
      */
