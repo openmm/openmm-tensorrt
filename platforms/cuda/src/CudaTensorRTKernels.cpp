@@ -12,13 +12,18 @@ CudaCalcTensorRTForceKernel::~CudaCalcTensorRTForceKernel() {
         TF_DeleteTensor(boxVectorsTensor);
 }
 
-void CudaCalcTensorRTForceKernel::initialize(const System& system, const TensorRTForce& force, TF_Session* session, TF_Graph* graph) {
+void CudaCalcTensorRTForceKernel::initialize(const System& system, const TensorRTForce& force, TF_Session* session, TF_Graph* graph, Engine& engine) {
 
     cu.setAsCurrent();
     this->session = session;
     this->graph = graph;
     usePeriodic = force.usesPeriodicBoundaryConditions();
     int numParticles = system.getNumParticles();
+
+    // Create TensorRT execution context
+    // TODO fix the destructor
+    const auto destructor = [](ExecutionContext* e) { /* e->destroy(); */ };
+    execution = {engine.createExecutionContext(), destructor};
 
     // Construct input tensors.
 
@@ -31,6 +36,20 @@ void CudaCalcTensorRTForceKernel::initialize(const System& system, const TensorR
 
     // Inititalize CUDA objects.
     graphForces.initialize(cu, 3*numParticles, TF_DataTypeSize(TF_FLOAT), "graphForces");
+
+    graphPositions.initialize<float>(cu, 3*numParticles, "graphPosition");
+    if (usePeriodic)
+        graphVectors.initialize<float>(cu, 9, "graphVectors");
+    graphEnergy.initialize<float>(cu, 1, "graphEnergy");
+    graphForces2.initialize<float>(cu, 3*numParticles, "graphForces2");
+
+    static_assert(sizeof(CUdeviceptr) == sizeof(void*));
+
+    bindings.push_back(reinterpret_cast<void*>(graphPositions.getDevicePointer()));
+    if (usePeriodic)
+        bindings.push_back(reinterpret_cast<void*>(graphVectors.getDevicePointer()));
+    bindings.push_back(reinterpret_cast<void*>(graphEnergy.getDevicePointer()));
+    bindings.push_back(reinterpret_cast<void*>(graphForces2.getDevicePointer()));
 
     // Create kernles
     auto module = cu.createModule(CudaTensorRTKernelSources::TensorRTForce);
@@ -85,15 +104,43 @@ double CudaCalcTensorRTForceKernel::execute(ContextImpl& context, bool includeFo
         throw OpenMMException(std::string("Error running TensorFlow session: ")+TF_Message(status));
     TF_DeleteStatus(status);
 
+    std::vector<float> positions2;
+    for (const auto& p: pos) {
+        positions2.push_back(p[0]);
+        positions2.push_back(p[1]);
+        positions2.push_back(p[2]);
+    }
+    graphPositions.upload(positions2);
+
+    if (usePeriodic) {
+        std::vector<float> vectors;
+        Vec3 box[3];
+        cu.getPeriodicBoxVectors(box[0], box[1], box[2]);
+        for (int i = 0; i < 3; i++) {
+            vectors.push_back(box[i][0]);
+            vectors.push_back(box[i][1]);
+            vectors.push_back(box[i][2]);
+        }
+        graphVectors.upload(vectors);
+    }
+
+    execution->executeV2(bindings.data());
+
     double energy = 0.0;
     if (includeEnergy)
         energy = reinterpret_cast<float*>(TF_TensorData(outputTensors[0]))[0];
+
+    if (includeEnergy) {
+        std::vector<float> energy2;
+        graphEnergy.download(energy2);
+        energy = energy2[0];
+    }
 
     if (includeForces) {
         const void* data = TF_TensorData(outputTensors[forceOutputIndex]);
         graphForces.upload(data);
         int paddedNumAtoms = cu.getPaddedNumAtoms();
-        void* args[] = {&graphForces.getDevicePointer(), &cu.getForce().getDevicePointer(), &cu.getAtomIndexArray().getDevicePointer(), &numParticles, &paddedNumAtoms};
+        void* args[] = {&graphForces2.getDevicePointer(), &cu.getForce().getDevicePointer(), &cu.getAtomIndexArray().getDevicePointer(), &numParticles, &paddedNumAtoms};
         cu.executeKernel(addForcesKernel, args, numParticles);
     }
 

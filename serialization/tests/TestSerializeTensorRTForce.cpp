@@ -13,7 +13,7 @@ extern "C" void registerTensorRTSerializationProxies();
 void testSerialization() {
     // Create a Force.
 
-    TensorRTForce force("graph.pb");
+    TensorRTForce force("graph.pb", "dummy");
 
     // Serialize and then deserialize it.
 

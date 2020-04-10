@@ -5,7 +5,11 @@
 
 using namespace OpenMM;
 
-TensorRTForceImpl::TensorRTForceImpl(const TensorRTForce& owner) : owner(owner), graph(NULL), session(NULL), status(TF_NewStatus()) {}
+TensorRTForceImpl::TensorRTForceImpl(const TensorRTForce& owner) : owner(owner), graph(NULL), session(NULL), status(TF_NewStatus()) {
+
+    const auto destructor = [](Runtime* r) { r->destroy(); };
+    runtime = {nvinfer1::createInferRuntime(logger), destructor};
+}
 
 TensorRTForceImpl::~TensorRTForceImpl() {
     if (session != NULL) {
@@ -29,6 +33,11 @@ void TensorRTForceImpl::initialize(ContextImpl& context) {
         throw OpenMMException(std::string("Error loading TensorFlow graph: ")+TF_Message(status));
     TF_DeleteImportGraphDefOptions(importOptions);
     TF_DeleteBuffer(buffer);
+
+    // Deserialize TensorRT graph
+    const auto& graph2 = owner.getSerializedGraph();
+    const auto destructor = [](Engine* e) { e->destroy(); };
+    engine = {runtime->deserializeCudaEngine(graph2.data(), graph2.size()), destructor};
 
     // Check that the graph contains all the expected elements and that their types
     // are supported.
@@ -67,10 +76,22 @@ void TensorRTForceImpl::initialize(ContextImpl& context) {
         throw OpenMMException(std::string("Error creating TensorFlow session: ")+TF_Message(status));
     TF_DeleteSessionOptions(sessionOptions);
 
+    // Validate TesorRT graph
+    const auto periodic = owner.usesPeriodicBoundaryConditions();
+    const auto numBindings = engine->getNbBindings();
+
+    if (periodic && numBindings != 4)
+        throw OpenMMException("TensorRTForce: graph mush have 4 bindings");
+
+    if (!periodic && numBindings != 3)
+        throw OpenMMException("TensorRTForce: graph must have 3 bindings");
+
+    // TODO complete validation
+
     // Create the kernel.
 
     kernel = context.getPlatform().createKernel(CalcTesorRTForceKernel::Name(), context);
-    kernel.getAs<CalcTesorRTForceKernel>().initialize(context.getSystem(), owner, session, graph);
+    kernel.getAs<CalcTesorRTForceKernel>().initialize(context.getSystem(), owner, session, graph, *engine);
 }
 
 double TensorRTForceImpl::calcForcesAndEnergy(ContextImpl& context, bool includeForces, bool includeEnergy, int groups) {

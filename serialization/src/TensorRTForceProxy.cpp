@@ -16,6 +16,6 @@ void TensorRTForceProxy::serialize(const void* object, SerializationNode& node) 
 void* TensorRTForceProxy::deserialize(const SerializationNode& node) const {
     if (node.getIntProperty("version") != 1)
         throw OpenMMException("Unsupported version number");
-    auto force = new TensorRTForce(node.getStringProperty("file"));
+    auto force = new TensorRTForce(node.getStringProperty("file"), "dummy");
     return force;
 }
