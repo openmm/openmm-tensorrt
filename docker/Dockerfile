@@ -71,7 +71,10 @@ ENV CONDA_CHANNEL_LIST "--channel omnia/label/${PLUGIN_CUDA_LABEL} --channel con
 RUN conda create $CONDA_CHANNEL_LIST \
                  --name $CONDA_NAME \
                  --yes \
+                 anaconda-client \
                  cmake \
+                 conda-build \
+                 conda-verify \
                  cudatoolkit==$PLUGIN_CUDA_VERSION.* \
                  git \
                  make \
@@ -79,9 +82,6 @@ RUN conda create $CONDA_CHANNEL_LIST \
                  python==$PYTHON_VERSION \
                  swig &&\
     conda clean --all --yes
-                #  anaconda \
-                #  conda-build \
-                #  conda-verify \
 RUN echo "conda activate $CONDA_NAME" >> ~/.bashrc
 
 # Set up environment
