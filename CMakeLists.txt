@@ -103,9 +103,7 @@ ADD_SUBDIRECTORY(serialization/tests)
 # Copy test files to the build directory.
 
 file(GLOB_RECURSE TEST_FILES RELATIVE "${CMAKE_SOURCE_DIR}"
-    "${CMAKE_SOURCE_DIR}/graphs/*.pb"
-    "${CMAKE_SOURCE_DIR}/graphs/*.trt"
-)
+    "${CMAKE_SOURCE_DIR}/graphs/*.trt")
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/tests)
 set(COPIED_TEST_FILES)
 foreach(TEST_FILE ${TEST_FILES})
