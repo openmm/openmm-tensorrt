@@ -4,7 +4,6 @@
 #include "TensorRTForce.h"
 #include "openmm/internal/ForceImpl.h"
 #include "openmm/Kernel.h"
-#include <tensorflow/c/c_api.h>
 #include <NvInfer.h>
 #include <iostream>
 #include <memory>

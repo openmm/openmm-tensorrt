@@ -11,10 +11,10 @@ SET(OPENMM_DIR "/usr/local/openmm" CACHE PATH "Where OpenMM is installed")
 INCLUDE_DIRECTORIES("${OPENMM_DIR}/include")
 LINK_DIRECTORIES("${OPENMM_DIR}/lib" "${OPENMM_DIR}/lib/plugins")
 
-# We need to know where TensorFlow is installed so we can access the headers and libraries.
-SET(TENSORFLOW_DIR "/usr/local" CACHE PATH "Where TensorFlow is installed")
-INCLUDE_DIRECTORIES("${TENSORFLOW_DIR}/include/tensorflow/c")
-LINK_DIRECTORIES("${TENSORFLOW_DIR}/lib")
+# We need to know where TensorRT is installed so we can access the headers and libraries.
+SET(TENSORRT_DIR "/usr" CACHE PATH "Where TensorRT is installed")
+INCLUDE_DIRECTORIES("${TENSORRT_DIR}/include")
+LINK_DIRECTORIES("${TENSORRT_DIR}/lib")
 
 # Specify the C++ version we are building for.
 SET (CMAKE_CXX_STANDARD 11)
@@ -85,7 +85,6 @@ SET_TARGET_PROPERTIES(${SHARED_NN_TARGET}
     PROPERTIES COMPILE_FLAGS "-DNN_BUILDING_SHARED_LIBRARY ${EXTRA_COMPILE_FLAGS}"
     LINK_FLAGS "${EXTRA_COMPILE_FLAGS}")
 TARGET_LINK_LIBRARIES(${SHARED_NN_TARGET} OpenMM)
-TARGET_LINK_LIBRARIES(${SHARED_NN_TARGET} tensorflow)
 TARGET_LINK_LIBRARIES(${SHARED_NN_TARGET} nvinfer)
 
 INSTALL_TARGETS(/lib RUNTIME_DIRECTORY /lib ${SHARED_NN_TARGET})
@@ -104,9 +103,7 @@ ADD_SUBDIRECTORY(serialization/tests)
 # Copy test files to the build directory.
 
 file(GLOB_RECURSE TEST_FILES RELATIVE "${CMAKE_SOURCE_DIR}"
-    "${CMAKE_SOURCE_DIR}/graphs/*.pb"
-    "${CMAKE_SOURCE_DIR}/graphs/*.trt"
-)
+    "${CMAKE_SOURCE_DIR}/graphs/*.trt")
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/tests)
 set(COPIED_TEST_FILES)
 foreach(TEST_FILE ${TEST_FILES})
