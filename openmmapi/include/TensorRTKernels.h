@@ -25,8 +25,6 @@ public:
      * 
      * @param system         the System this kernel will be applied to
      * @param force          the TenorRTForce this kernel will be used for
-     * @param session        the TensorFlow session in which to do calculations
-     * @param graph          the TensorFlow graph to use for computing forces and energy
      */
     virtual void initialize(const System& system, const TensorRTForce& force, Engine& engine) = 0;
     /**

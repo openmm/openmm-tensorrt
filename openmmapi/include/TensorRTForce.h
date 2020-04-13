@@ -27,7 +27,7 @@ public:
     const std::string& getSerializedGraph() const { return serializedGraph; }
     /**
      * Set whether this force makes use of periodic boundary conditions.  If this is set
-     * to true, the TensorFlow graph must include a 3x3 tensor called "boxvectors", which
+     * to true, the TensorRT graph must include a 3x3 tensor called "boxvectors", which
      * is set to the current periodic box vectors.
      */
     void setUsesPeriodicBoundaryConditions(bool periodic) { usePeriodic = periodic; }
