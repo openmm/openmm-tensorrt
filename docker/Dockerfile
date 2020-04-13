@@ -78,6 +78,7 @@ RUN conda create $CONDA_CHANNEL_LIST \
                  cudatoolkit==$PLUGIN_CUDA_VERSION.* \
                  git \
                  make \
+                 nomkl \
                  openmm==$OPENMM_VERSION \
                  python==$PYTHON_VERSION \
                  swig &&\
