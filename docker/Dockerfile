@@ -74,7 +74,6 @@ RUN conda create $CONDA_CHANNEL_LIST \
                  cmake \
                  cudatoolkit==$PLUGIN_CUDA_VERSION.* \
                  git \
-                 libtensorflow \
                  make \
                  openmm==$OPENMM_VERSION \
                  python==$PYTHON_VERSION \
