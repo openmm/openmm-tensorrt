@@ -65,9 +65,9 @@ USER $UID:$GID
 
 # Create conda enviroment
 ENV OPENMM_VERSION 7.3.1
-ENV PYTHON_VERSION 3.6
+ENV PYTHON_VERSION 3.7
 ENV CONDA_NAME devel
-ENV CONDA_CHANNEL_LIST "--channel omnia/label/${PLUGIN_CUDA_LABEL} --channel conda-forge"
+ENV CONDA_CHANNEL_LIST "--channel omnia/label/${PLUGIN_CUDA_LABEL}"
 RUN conda create $CONDA_CHANNEL_LIST \
                  --name $CONDA_NAME \
                  --yes \
