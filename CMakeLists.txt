@@ -11,10 +11,10 @@ SET(OPENMM_DIR "/usr/local/openmm" CACHE PATH "Where OpenMM is installed")
 INCLUDE_DIRECTORIES("${OPENMM_DIR}/include")
 LINK_DIRECTORIES("${OPENMM_DIR}/lib" "${OPENMM_DIR}/lib/plugins")
 
-# We need to know where TensorFlow is installed so we can access the headers and libraries.
-SET(TENSORFLOW_DIR "/usr/local" CACHE PATH "Where TensorFlow is installed")
-INCLUDE_DIRECTORIES("${TENSORFLOW_DIR}/include/tensorflow/c")
-LINK_DIRECTORIES("${TENSORFLOW_DIR}/lib")
+# We need to know where TensorRT is installed so we can access the headers and libraries.
+SET(TENSORRT_DIR "/usr" CACHE PATH "Where TensorRT is installed")
+INCLUDE_DIRECTORIES("${TENSORRT_DIR}/include")
+LINK_DIRECTORIES("${TENSORRT_DIR}/lib")
 
 # Specify the C++ version we are building for.
 SET (CMAKE_CXX_STANDARD 11)
