@@ -86,5 +86,6 @@ RUN conda create $CONDA_CHANNEL_LIST \
 RUN echo "conda activate $CONDA_NAME" >> ~/.bashrc
 
 # Set up environment
+RUN cd && ln -s .conda/envs/devel/conda-bld/linux-64 packages
 WORKDIR /home/user/openmm-tensorrt.git
 CMD bash
