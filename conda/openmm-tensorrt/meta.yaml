@@ -27,9 +27,7 @@ build:
     - make install
 
     # Set the runtime library paths
-    - ls -l $PREFIX
-    - ls -l $PREFIX/lib
-    - patchelf --force-rpath --set-rpath '$ORIGIN:$ORIGIN/plugins' \
+    - patchelf --force-rpath --set-rpath '$ORIGIN:$ORIGIN/plugins'
         $PREFIX/lib/libOpenMMTensorRT.so
 
 requirements:
