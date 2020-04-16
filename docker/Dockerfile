@@ -7,7 +7,7 @@ FROM nvidia/cuda:$PLUGIN_CUDA_VERSION-devel-centos7
 # Set up CUDA
 # Note: the following has to be repeated as it looses effect after FROM
 ARG PLUGIN_CUDA_VERSION
-ENV PLUGING_CUDA_VERSION $PLUGIN_CUDA_VERSION
+ENV PLUGIN_CUDA_VERSION $PLUGIN_CUDA_VERSION
 ARG PLUGIN_CUDA_LABEL
 ENV PLUGIN_CUDA_LABEL $PLUGIN_CUDA_LABEL
 ENV CUDA_PATH /usr/local/cuda
@@ -65,25 +65,27 @@ USER $UID:$GID
 
 # Create conda enviroment
 ENV OPENMM_VERSION 7.3.1
-ENV PYTHON_VERSION 3.6
+ENV PYTHON_VERSION 3.7
 ENV CONDA_NAME devel
-ENV CONDA_CHANNEL_LIST "--channel omnia/label/${PLUGIN_CUDA_LABEL} --channel conda-forge"
+ENV CONDA_CHANNEL_LIST "--channel omnia/label/${PLUGIN_CUDA_LABEL}"
 RUN conda create $CONDA_CHANNEL_LIST \
                  --name $CONDA_NAME \
                  --yes \
+                 anaconda-client \
                  cmake \
+                 conda-build \
+                 conda-verify \
                  cudatoolkit==$PLUGIN_CUDA_VERSION.* \
                  git \
                  make \
+                 nomkl \
                  openmm==$OPENMM_VERSION \
                  python==$PYTHON_VERSION \
                  swig &&\
     conda clean --all --yes
-                #  anaconda \
-                #  conda-build \
-                #  conda-verify \
 RUN echo "conda activate $CONDA_NAME" >> ~/.bashrc
 
 # Set up environment
+RUN cd && ln -s .conda/envs/devel/conda-bld/linux-64 packages
 WORKDIR /home/user/openmm-tensorrt.git
 CMD bash

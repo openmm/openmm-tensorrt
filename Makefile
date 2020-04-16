@@ -32,7 +32,12 @@ python: install
 	make -C $(BUILD_DIR) PythonInstall CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0"
 
 clean:
-	make -C $(BUILD_DIR) clean
+	$(RM) -r $(BUILD_DIR)
+
+conda:
+	conda build conda/openmm-tensorrt \
+	            $(CONDA_CHANNEL_LIST) \
+	            --python $(PYTHON_VERSION)
 
 docker_image:
 	nvidia-docker build --tag $(PLUGIN_DOCKER_IMAGE) \

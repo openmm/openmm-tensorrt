@@ -1,0 +1,54 @@
+package:
+  name: openmm-tensorrt
+  version: {{ environ['PLUGIN_VERSION'].replace('-', '_') }}
+
+source:
+  path: ../..
+
+build:
+  string: {{ PLUGIN_CUDA_LABEL }}_0
+#   binary_relocation: False
+  ignore_run_exports:
+    - libgcc-ng
+    - libstdcxx-ng
+#   missing_dso_whitelist:
+#     - "*/libcuda.so.1"
+#     - "*/libc.so.6"
+#     - "*/libdl.so.2"
+#     - "*/libm.so.6"
+#     - "*/libpthread.so.0"
+#     - "*/librt.so.1"
+  script_env:
+   - CC
+   - CXX
+  script:
+    # Build & install OpemMM-TensorRT
+    - make clean
+    - make install
+
+    # Set the runtime library paths
+    - patchelf --force-rpath --set-rpath '$ORIGIN:$ORIGIN/plugins'
+        $PREFIX/lib/libOpenMMTensorRT.so
+
+requirements:
+  build:
+    - cmake
+    - git
+    - make
+    - nomkl
+    - openmm {{ OPENMM_VERSION }}
+    - swig
+  run:
+    - cudatoolkit {{ PLUGIN_CUDA_VERSION }}
+    - openmm {{ OPENMM_VERSION }}
+
+test:
+  requires:
+    - conda-build
+#   source_files:
+  commands:
+    # Check linkage
+    - conda inspect linkages openmm-tensorrt
+
+    # Run tests
+    #- make check
