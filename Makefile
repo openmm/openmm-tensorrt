@@ -17,7 +17,6 @@ build:
 	cmake .. \
 		-DCMAKE_BUILD_TYPE=Release \
 		-DCMAKE_INSTALL_PREFIX=$(CONDA_PREFIX) \
-		-DEXTRA_COMPILE_FLAGS="-D_GLIBCXX_USE_CXX11_ABI=0" \
 		-DOPENMM_DIR=$(CONDA_PREFIX) \
 		&&\
 	make -j
@@ -29,7 +28,7 @@ install: check
 	make -C $(BUILD_DIR) install
 
 python: install
-	make -C $(BUILD_DIR) PythonInstall CFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0"
+	make -C $(BUILD_DIR) PythonInstall
 
 clean:
 	$(RM) -r $(BUILD_DIR)

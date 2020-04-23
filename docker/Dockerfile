@@ -64,10 +64,10 @@ RUN echo $UID $GID &&\
 USER $UID:$GID
 
 # Create conda enviroment
-ENV OPENMM_VERSION 7.3.1
+ENV OPENMM_VERSION 7.4.1.2020.01.06
 ENV PYTHON_VERSION 3.7
 ENV CONDA_NAME devel
-ENV CONDA_CHANNEL_LIST "--channel omnia/label/${PLUGIN_CUDA_LABEL}"
+ENV CONDA_CHANNEL_LIST "--channel conda-forge"
 RUN conda create $CONDA_CHANNEL_LIST \
                  --name $CONDA_NAME \
                  --yes \
@@ -79,11 +79,30 @@ RUN conda create $CONDA_CHANNEL_LIST \
                  git \
                  make \
                  nomkl \
-                 openmm==$OPENMM_VERSION \
                  python==$PYTHON_VERSION \
                  swig &&\
     conda clean --all --yes
 RUN echo "conda activate $CONDA_NAME" >> ~/.bashrc
+
+# Build a custom OpenMM
+# Note: cannot use the OpennMM packages form Omnia channel because they are
+#       built with the old C++ ABI.
+# Note: conda-build needs a writable cache directory
+RUN echo -e "pkgs_dirs:\n - ~/.conda/pkgs" > ~/.condarc
+COPY --chown=$UID:$GID openmm /tmp/openmm
+RUN . /etc/profile.d/conda.sh &&\
+    conda activate $CONDA_NAME &&\
+    conda build $CONDA_CHANNEL_LIST \
+                --python $PYTHON_VERSION \
+                /tmp/openmm &&\
+    conda build purge &&\
+    rm -r /tmp/openmm
+ENV CONDA_CHANNEL_LIST "--channel file://home/user/.conda/envs/$CONDA_NAME/conda-bld \
+                        $CONDA_CHANNEL_LIST"
+RUN conda install $CONDA_CHANNEL_LIST \
+                  --name $CONDA_NAME \
+                  --yes \
+                  openmm==$OPENMM_VERSION
 
 # Set up environment
 RUN cd && ln -s .conda/envs/devel/conda-bld/linux-64 packages
